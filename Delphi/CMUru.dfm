@@ -228,7 +228,7 @@ object Form1: TForm1
     Top = 0
     Width = 375
     Height = 233
-    ActivePage = ts1
+    ActivePage = ts2
     Align = alTop
     TabOrder = 0
     object ts1: TTabSheet
@@ -717,7 +717,7 @@ object Form1: TForm1
         Font.Height = -13
         Font.Name = 'MS Sans Serif'
         Font.Style = []
-        ItemHeight = 0
+        ItemHeight = 16
         ParentFont = False
         TabOrder = 0
         Text = 'audio devices'

@@ -385,7 +385,7 @@ begin
   GetMem(fFFTComplBuf, BufSize*SizeOf(TComplex)); //Выделение памяти под массив
   for i:=0 to BufSize-1 do //Заполняем данными массив
     begin
-      fFFTComplBuf[i].Re := (inDataBuf[i*2]+inDataBuf[i*2+1])div 2;
+      fFFTComplBuf[i].Re := (inDataBuf[i*chan]+inDataBuf[i*chan+1])div 2;
       fFFTComplBuf[i].Im := 0;
     end;
   fftb:=TFFTBase.Create(nil);
@@ -400,7 +400,6 @@ begin
   //Переносим результат БПФ в исходный массив
   //заполняем массив выходными значениями (предварительно масштабируем их)
   for i:=0 to BufSize-1 do fftDataBuf[i] := Round(fFFTComplBuf[i].Re / gain);
-//  for i:=0 to BufSize-1 do fftDataBuf[i] := Round(Sqrt(fFFTComplBuf[i].Re*fFFTComplBuf[i].Re+fFFTComplBuf[i].Im*fFFTComplBuf[i].Im)/gain);
   fftb.Free;
   FreeMem(fFFTComplBuf, BufSize*SizeOf(TComplex)); //Освобождение памяти выделенной под массив
 end;
@@ -409,7 +408,7 @@ procedure TForm1.OnWaveIn;
 var i: integer;
 begin
   Data16 := PData16(PWaveHdr(Msg.lParam)^.lpData);
-  for i := 0 to BufSize*2-1 do inDataBuf[i]:= Data16^[i];
+  for i := 0 to BufSize*chan-1 do inDataBuf[i]:= Data16^[i];
   MakeFFT();
   DrawFFT_BP();
   if ready then WaveInAddBuffer(WaveIn, PWaveHdr(Msg.lParam), SizeOf(TWaveHdr))
@@ -687,7 +686,7 @@ end;
 procedure TForm1.setBandPass;
 var i:Integer;
 begin
-   SendBuff[0]:=253;  // Сброс счётчика команды
+   SendBuff[0]:=253;   // Сброс счётчика, начало команды
    for i:=0 to nBandPass-1 do
     begin
      if zmuBuf[i]>252 then zmuBuf[i]:=255;
@@ -697,9 +696,9 @@ begin
    SendBuff[22]:=param[prog];
    SendBuff[23]:=brightness;
    SendBuff[24]:=0;
-   SendBuff[25]:=254;
+   SendBuff[25]:=254;  // Конец передачи команды
    FLink.SendBuffer(SendBuff);
-   rcvAnswer;
+   rcvAnswer;          // Ответ
 end;
 
 procedure TForm1.btn4Click(Sender: TObject);
@@ -708,7 +707,7 @@ begin
    with Sender as TSpeedButton do
     begin
       prog:=tag;
-      programRun(prog,param[prog],brightness,0);
+      programRun(prog,param[prog],brightness,0); // Команда установки динамического режима
       Sleep(200);
       trckbr1.Position:=param[prog];
     end;
@@ -717,15 +716,16 @@ end;
 procedure TForm1.programRun(number,val,br,rot:byte);
 var i:Integer;
 begin
+    // Для программы нужен только номер и значение параметров
     SendBuff[0]:=253;      // Сброс счётчика, начало команды
-    for i:=1 to 20 do SendBuff[i]:=number;   // Для программы нужен только номер и значение параметра
+    for i:=1 to 20 do SendBuff[i]:=number;
     SendBuff[21]:=number;  // Номер программы
-    SendBuff[22]:=val;
-    SendBuff[23]:=br;
-    SendBuff[24]:=rot;
+    SendBuff[22]:=val;     // Темп
+    SendBuff[23]:=br;      // Яркость
+    SendBuff[24]:=rot;     // Перебор программ
     SendBuff[25]:=254;     // Конец команды
     FLink.SendBuffer(SendBuff);
-    rcvAnswer;
+    rcvAnswer;             // Ответ
 end;
 
 procedure TForm1.rcvAnswer;
@@ -739,7 +739,7 @@ begin
       FLink.ReceiveBuffer(RcvBuff,receive_byte);
       for i:=0 to receive_byte-1 do
        Begin
-{
+{       // Анализ не проводим не имеет смысла повторно передавать пакет (высокий темп ЦМ программы)
         s_in:=s_in+inttostr(RcvBuff[i]);
         if RcvBuff[i] in [#0, #10] then
          begin
@@ -785,7 +785,7 @@ begin
   if (mx mod 2)=0 then mcl:=mx*8+my
                   else mcl:=mx*8+7-my;
   param[prog]:=mcl;
-  programRun(prog,param[prog],brightness,rotate);
+  programRun(prog,param[prog],brightness,rotate);   // Команда установки цвета всей ленты
 end;
 
 procedure TForm1.N1Click(Sender: TObject);
@@ -865,7 +865,7 @@ begin
    if initCnfg then Exit;
    if ready then stop;
    prog:=se2.Value*8+se1.Value;
-   programRun(prog,param[prog],brightness,0);
+   programRun(prog,param[prog],brightness,0); // Команда установки динамического режима
    Sleep(200);
    trckbr1.Position:=param[prog];
 end;
@@ -876,7 +876,7 @@ begin
   with Sender as TSpeedButton do
    begin
      prog:=tag;
-     trckbr1.Position:=param[prog];
+     trckbr1.Position:=param[prog];  // Команда установки цветомузыкального режима
    end;
   if ready then Exit;
   waveInit;
@@ -884,9 +884,9 @@ end;
 
 procedure TForm1.chk3Click(Sender: TObject);
 begin
-   if chk3.Checked then rotate:=255
-                   else rotate:=0;
-   programRun(252,param[prog],brightness,rotate);
+   if chk3.Checked then rotate:=255                // Включить перебор динамических программ
+                   else rotate:=0;                 // Отключить перебор динамических программ
+   programRun(252,param[prog],brightness,rotate);  // Команда изменения параметров
    Sleep(200);
 end;
 
