@@ -16,13 +16,12 @@ uses
 
 Const
     BufSize = 1024;
-    fftSq = 10; // 2**10=1024
-    chan=1;
+    chan=2;
+    fftSq = 10; // 2**9=512
     ffLen = 3;
     nBandPass = 20;
-    ledStrip = 120;  // Количество используемых полос < nBandPass (обязательно)
-    REGSTR_KEY_BCCNFG = '\SOFTWARE\JURASPB\CMU\Param';
     CommunicPortSpeed = 115200;
+    REGSTR_KEY_BCCNFG = '\SOFTWARE\JURASPB\CMU\Param';
 
 type
   TModeDescr=record
@@ -33,7 +32,6 @@ type
     descr: string[32];    // словесное описание
 end;
 
-// Таблица цветов идентичная таблице в скетчах Arduino
 const
    colorTab: array [0..95] of TColor=(
       $FF0000,$FF1100,$FF2200,$FF3300,$FF4400,$FF5500,$FF6600,$FF7700,$FF8800,$FF9900,$FFAA00,$FFBB00,$FFCC00,$FFDD00,$FFEE00,$FFFF00,  //красный - жёлтый
@@ -44,7 +42,7 @@ const
       $FF00FF,$FF00EE,$FF00DD,$FF00CC,$FF00BB,$FF00AA,$FF0099,$FF0088,$FF0077,$FF0066,$FF0055,$FF0044,$FF0033,$FF0022,$FF0011,$FF0000); //маджента — красный
 
 const
-// массив описания режимов работы
+// массив содержит сопоставления режима работы и словесного описания
    modes: array [1..12] of TModeDescr=((Channels: 1; Rate: 11025; Bits: 8; mode: WAVE_FORMAT_1M08; descr:'11.025 kHz, mono, 8-bit'),
                                        (Channels: 1; Rate: 11025; Bits: 16; mode: WAVE_FORMAT_1M16; descr:'11.025 kHz, mono, 16-bit'),
                                        (Channels: 2; Rate: 11025; Bits: 8; mode: WAVE_FORMAT_1S08; descr:'11.025 kHz, stereo, 8-bit'),
@@ -81,7 +79,6 @@ TForm1 = class(TForm)
     N2: TMenuItem;
     N3: TMenuItem;
     N4: TMenuItem;
-    N21: TMenuItem;
     N31: TMenuItem;
     N5: TMenuItem;
     N6: TMenuItem;
@@ -89,7 +86,6 @@ TForm1 = class(TForm)
     lbl5: TLabel;
     lbl6: TLabel;
     btn19: TButton;
-    lbl7: TLabel;
     lbl8: TLabel;
     lbl9: TLabel;
     btn12: TSpeedButton;
@@ -131,6 +127,14 @@ TForm1 = class(TForm)
     lbl18: TLabel;
     btn5: TSpeedButton;
     chk3: TCheckBox;
+    lbl7: TLabel;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    btn8: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    SpeedButton4: TSpeedButton;
+    btn9: TSpeedButton;
+    SpeedButton5: TSpeedButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
@@ -278,7 +282,7 @@ var i,j,k,zmax,nGarmoniks: integer;
 begin
   Inc(ffCount);
   if ffCount>ffLen-1 then ffCount:=0;
-  // разбиваем неравномерно по полосам
+  // не равномерно по октавам
   i:=1;
   zmax:=0;
   for j:=0 to nBandPass-1 do
@@ -348,6 +352,7 @@ begin
      zcount:=10;
      for j:=0 to nBandPass-1 do zmuBuf[j]:=zcl[j];
    end;
+//  for j:=nBandPass to 30 do zmuBuf[j]:=0;
   if FLink.Active then setBandPass;
 end;
 
@@ -391,10 +396,11 @@ begin
   //2^X=N (степень числа два)
   //False – прямое преобразование; True – обратное
   //Тип окна: 0-прямоугольное, 1-треугольное, 2-Хэминга, 3-Ханна, 4-Блэкмана
-  fftb.FFT(Pointer(fFFTComplBuf), BufSize, fftSq, False, 0);
+  fftb.FFT(Pointer(fFFTComplBuf), BufSize, fftSq, False, 2);
   //Переносим результат БПФ в исходный массив
   //заполняем массив выходными значениями (предварительно масштабируем их)
   for i:=0 to BufSize-1 do fftDataBuf[i] := Round(fFFTComplBuf[i].Re / gain);
+//  for i:=0 to BufSize-1 do fftDataBuf[i] := Round(Sqrt(fFFTComplBuf[i].Re*fFFTComplBuf[i].Re+fFFTComplBuf[i].Im*fFFTComplBuf[i].Im)/gain);
   fftb.Free;
   FreeMem(fFFTComplBuf, BufSize*SizeOf(TComplex)); //Освобождение памяти выделенной под массив
 end;
@@ -575,10 +581,7 @@ begin
   ShowInfo;
   if FLink.Active then
    begin
-    if prog>239 then
-     begin
-      waveInit;
-     end else
+    if prog<240 then
      begin
        initCnfg:=True;
        se2.Value:=prog div 8;
@@ -587,7 +590,7 @@ begin
        initCnfg:=False;
        sleep(1500);
        programRun(prog,param[prog],brightness,rotate);
-     end;
+     end else waveInit;
     if chk1.Checked then PostMessage(Handle,WM_SYSCOMMAND,SC_MINIMIZE,0);
    end;
 end;
@@ -652,11 +655,11 @@ begin
   hBuf := GlobalAlloc(GMEM_MOVEABLE and GMEM_SHARE, BufLen);
   Buf := GlobalLock(hBuf);
   with BufHead do
-   begin
-    lpData := Buf;
-    dwBufferLength := BufLen;
-    dwFlags := WHDR_BEGINLOOP;
-   end;
+    begin
+      lpData := Buf;
+      dwBufferLength := BufLen;
+      dwFlags := WHDR_BEGINLOOP;
+    end;
   WaveInPrepareHeader(WaveIn, Addr(BufHead), sizeof(BufHead));
   WaveInAddBuffer(WaveIn, addr(BufHead), sizeof(BufHead));
   GetMem(p, BufSize * sizeof(TPoint));
@@ -684,19 +687,19 @@ end;
 procedure TForm1.setBandPass;
 var i:Integer;
 begin
-   SendBuff[0]:=253;  // Сброс счётчика. Начало команды.
+   SendBuff[0]:=253;  // Сброс счётчика команды
    for i:=0 to nBandPass-1 do
     begin
-     if zmuBuf[i]>252 then zmuBuf[i]:=255; // 253 и 254 - начало и конец команды заменяем на 255
+     if zmuBuf[i]>252 then zmuBuf[i]:=255;
      SendBuff[i+1]:=zmuBuf[i];
     end;
    SendBuff[21]:=prog;
    SendBuff[22]:=param[prog];
    SendBuff[23]:=brightness;
    SendBuff[24]:=0;
-   SendBuff[25]:=254; // Конец команды.
+   SendBuff[25]:=254;
    FLink.SendBuffer(SendBuff);
-   rcvAnswer;         // Получаем ответ (анализ не проводим т.к. смысла нет передавать повторно).
+   rcvAnswer;
 end;
 
 procedure TForm1.btn4Click(Sender: TObject);
@@ -706,7 +709,7 @@ begin
     begin
       prog:=tag;
       programRun(prog,param[prog],brightness,0);
-      Sleep(400);
+      Sleep(200);
       trckbr1.Position:=param[prog];
     end;
 end;
@@ -714,15 +717,15 @@ end;
 procedure TForm1.programRun(number,val,br,rot:byte);
 var i:Integer;
 begin
-    SendBuff[0]:=253;      // Сброс счётчика. Начало команды.
+    SendBuff[0]:=253;      // Сброс счётчика, начало команды
     for i:=1 to 20 do SendBuff[i]:=number;   // Для программы нужен только номер и значение параметра
     SendBuff[21]:=number;  // Номер программы
-    SendBuff[22]:=val;     // Параметр уровень или темп
-    SendBuff[23]:=br;      // Яркость
-    SendBuff[24]:=rot;     // Управление. Пока только перебор динамических программ
+    SendBuff[22]:=val;
+    SendBuff[23]:=br;
+    SendBuff[24]:=rot;
     SendBuff[25]:=254;     // Конец команды
     FLink.SendBuffer(SendBuff);
-    rcvAnswer;             // Получаем ответ
+    rcvAnswer;
 end;
 
 procedure TForm1.rcvAnswer;
@@ -734,10 +737,8 @@ begin
     if receive_byte>0 then
      begin
       FLink.ReceiveBuffer(RcvBuff,receive_byte);
-      // ответы принимаем но не анализируем
       for i:=0 to receive_byte-1 do
        Begin
-
 {
         s_in:=s_in+inttostr(RcvBuff[i]);
         if RcvBuff[i] in [#0, #10] then
@@ -762,14 +763,14 @@ begin
         if pgc1.TabIndex = 1 then
          begin
            programRun(252,param[prog],brightness,rotate); // 252 - нет программы, а выполняется изменение уровня
-           Sleep(400);
+           Sleep(200);
          end else gain:=64+(252-param[prog])*16;   // изменение уровня ЦМУ
       end else
       begin
         brightness:=trckbr2.Position;
         lbl18.Caption:=IntToStr(brightness);
         programRun(252,param[prog],brightness,rotate);
-        Sleep(400);
+        Sleep(200);
       end;
    end;
 end;
@@ -791,7 +792,7 @@ procedure TForm1.N1Click(Sender: TObject);
 begin
   with Sender as TMenuItem do
    begin
-     if Tag<248 then
+     if Tag<251 then
       begin
         prog:=tag;
         trckbr1.Position:=param[prog];
@@ -799,7 +800,7 @@ begin
       end else
       begin
         prog:=tag;
-        if prog=248 then param[prog]:=63;
+        if Tag=251 then param[prog]:=63;
         programRun(prog,param[prog],brightness,rotate);
       end;
    end;
@@ -814,9 +815,9 @@ end;
 procedure TForm1.btn12Click(Sender: TObject);
 begin
   if ready then stop;
-  Sleep(400);
-  prog:=251;          // Команда изменения параметров
-  param[prog]:=63;    // Установить яркость 0
+  Sleep(200);
+  prog:=251;
+  param[prog]:=63;
   programRun(prog,param[prog],brightness,rotate);
 end;
 
@@ -830,7 +831,7 @@ begin
    with Sender as TLabel do
     begin
       case Tag of
-         0: ShellExecute(Application.Handle,'open','http://www.paypal.com',nil,nil,0);
+         0: ShellExecute(Application.Handle,'open','https://paypal.me/Petrukhanov',nil,nil,0);
          1: ShellExecute(Application.Handle,'open','https://qiwi.com/payment/form/99',nil,nil,0);
          2: ShellExecute(Application.Handle,'open','https://www.webmoney.ru/',nil,nil,0);
          3: ShellExecute(Application.Handle,'open','https://money.yandex.ru/to/41001598825682',nil,nil,0);
@@ -865,7 +866,7 @@ begin
    if ready then stop;
    prog:=se2.Value*8+se1.Value;
    programRun(prog,param[prog],brightness,0);
-   Sleep(400);
+   Sleep(200);
    trckbr1.Position:=param[prog];
 end;
 
@@ -874,7 +875,7 @@ begin
   zbrigth:=0;
   with Sender as TSpeedButton do
    begin
-     prog:=240+tag; // Команда установить цветомузыкальный режим 240+tag
+     prog:=tag;
      trckbr1.Position:=param[prog];
    end;
   if ready then Exit;
@@ -885,8 +886,8 @@ procedure TForm1.chk3Click(Sender: TObject);
 begin
    if chk3.Checked then rotate:=255
                    else rotate:=0;
-   programRun(252,param[prog],brightness,rotate); // Команда изменения параметров
-   Sleep(400);
+   programRun(252,param[prog],brightness,rotate);
+   Sleep(200);
 end;
 
 end.
