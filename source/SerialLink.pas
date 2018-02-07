@@ -1,5 +1,11 @@
 unit SerialLink;
 
+(*
+  Copyright 2018, Petrukhanov Yuriy
+  Email:juraspb@mail.ru
+  Home: https://github.com/juraspb/MusictoColor
+*)
+
 interface
 
 uses
@@ -92,20 +98,20 @@ end;
 procedure TSerialLink.Open;
 var _DCB : TDCB;
 begin
-  {Откроем порт}
+  {ГЋГІГЄГ°Г®ГҐГ¬ ГЇГ®Г°ГІ}
   FHandle := CreateFile(PChar(Port), GENERIC_READ+GENERIC_WRITE, 0, nil,
                OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
   if FHandle = INVALID_HANDLE_VALUE then
   begin
-    DoErrorEvent('Не могу открыть порт');
+    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі Г®ГІГЄГ°Г»ГІГј ГЇГ®Г°ГІ');
     FError:= -1;
     Exit;
   end;
  try
-  {Установить параметры порта}
+  {Г“Г±ГІГ Г­Г®ГўГЁГІГј ГЇГ Г°Г Г¬ГҐГІГ°Г» ГЇГ®Г°ГІГ }
   if not GetCommState(FHandle, _DCB) then
   begin
-    DoErrorEvent('Не могу получить состояние порта');
+    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі ГЇГ®Г«ГіГ·ГЁГІГј Г±Г®Г±ГІГ®ГїГ­ГЁГҐ ГЇГ®Г°ГІГ ');
     FError:= -2;
     Exit;
   end;
@@ -119,7 +125,7 @@ begin
   end;
   if not SetCommState(FHandle, _DCB) then
   begin
-    DoErrorEvent('Не могу установить состояние порта');
+    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі ГіГ±ГІГ Г­Г®ГўГЁГІГј Г±Г®Г±ГІГ®ГїГ­ГЁГҐ ГЇГ®Г°ГІГ ');
     FError:= -3;
     Exit;
   end;
@@ -176,7 +182,7 @@ begin
   end;
   if not SetCommTimeouts(FHandle, _CommTimeouts) then
   begin
-    DoErrorEvent('Не могу установить таймаут порта');
+    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі ГіГ±ГІГ Г­Г®ГўГЁГІГј ГІГ Г©Г¬Г ГіГІ ГЇГ®Г°ГІГ ');
     Exit;
   end;
   Result:= True;
@@ -196,7 +202,7 @@ begin
      begin
       if not WriteFile(FHandle, SendBuff, ToSend, written, nil) Or (written <> ToSend) then
       begin
-        DoErrorEvent('Не могу записать в порт');
+        DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі Г§Г ГЇГЁГ±Г ГІГј Гў ГЇГ®Г°ГІ');
         FError:= -4;
         Exit;
       end;
@@ -213,13 +219,13 @@ begin
 //  PurgeComm(FHandle,PURGE_RXCLEAR);
   if not ReadFile(FHandle, RcvBuff, ToReceive, rcvd, nil) then
    begin
-    DoErrorEvent('Не могу прочитать из порта');
+    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі ГЇГ°Г®Г·ГЁГІГ ГІГј ГЁГ§ ГЇГ®Г°ГІГ ');
     FError:= -5;
     Exit;
    end;
   if rcvd = 0 then
    begin
-    DoErrorEvent('Пустой буфер порта');
+    DoErrorEvent('ГЏГіГ±ГІГ®Г© ГЎГіГґГҐГ° ГЇГ®Г°ГІГ ');
     FError:= -6;
     Exit;
    end;
