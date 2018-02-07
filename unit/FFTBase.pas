@@ -37,7 +37,8 @@ implementation
 procedure TFFTBase.InitSinCosTbl;
 var i :integer;
 begin
- for i :=1 to 2*fWindowSize do begin
+ for i :=1 to 2*fWindowSize do
+ begin
   fSinTbl[i] := (-1)*Sin(PI/i);
   fCosTbl[i] := Cos(PI/i);
  end;
@@ -144,9 +145,7 @@ begin
 
  if not Inverse then //Вычисление Мощности С=SQRT(А^2+B^2) при -прямом- БПФ
   for i :=0 to N-1 do
-   TComplexArray(F^)[i].Re :=sqrt(sqr(TComplexArray(F^)[i].Re)
-                                 +sqr(TComplexArray(F^)[i].Im));
-
+   TComplexArray(F^)[i].Re :=sqrt(sqr(TComplexArray(F^)[i].Re)+sqr(TComplexArray(F^)[i].Im));
  DelMem; //Освобождение ресурсов
 end;
 
@@ -207,7 +206,6 @@ var U, Uo, W, T :TComplex;
       end;
     end;
 begin
-
  InitMem(N);
  InitSinCosTbl;
  SetWindow(Window);
@@ -255,7 +253,6 @@ begin
    U.Im :=(Uo.Re * W.Im) + (Uo.Im * W.Re);
   end;
  end;
-
  ImDummy :=1/Sqrt(N);
  if Inverse then ImDummy :=-ImDummy;
  ReDummy :=Abs(ImDummy);
@@ -264,7 +261,6 @@ begin
    TComplexArray(F^)[i-1].Re :=TComplexArray(F^)[i-1].Re*ReDummy;
    TComplexArray(F^)[i-1].Im :=TComplexArray(F^)[i-1].Im*ImDummy;
   end;
-
  DelMem; //Освобождение ресурсов
 end;
 

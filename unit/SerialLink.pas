@@ -1,5 +1,4 @@
 unit SerialLink;
-
 (*
   Copyright 2018, Petrukhanov Yuriy
   Email:juraspb@mail.ru
@@ -37,7 +36,7 @@ type
     property Error: integer read FError;
     procedure Open;
     procedure Close;
-    procedure SendBuffer(var SendBuff: array of char);
+    procedure SendBuffer(var SendBuff: array of byte);
     procedure ReceiveBuffer(var RcvBuff: array of char; ToReceive: Cardinal);
     function ReceiveInQue: integer;
     function SetTimeouts(ReadTotal: Cardinal): Boolean;
@@ -98,20 +97,20 @@ end;
 procedure TSerialLink.Open;
 var _DCB : TDCB;
 begin
-  {ГЋГІГЄГ°Г®ГҐГ¬ ГЇГ®Г°ГІ}
+  {Откроем порт}
   FHandle := CreateFile(PChar(Port), GENERIC_READ+GENERIC_WRITE, 0, nil,
                OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
   if FHandle = INVALID_HANDLE_VALUE then
   begin
-    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі Г®ГІГЄГ°Г»ГІГј ГЇГ®Г°ГІ');
+    DoErrorEvent('Не могу открыть порт');
     FError:= -1;
     Exit;
   end;
  try
-  {Г“Г±ГІГ Г­Г®ГўГЁГІГј ГЇГ Г°Г Г¬ГҐГІГ°Г» ГЇГ®Г°ГІГ }
+  {Установить параметры порта}
   if not GetCommState(FHandle, _DCB) then
   begin
-    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі ГЇГ®Г«ГіГ·ГЁГІГј Г±Г®Г±ГІГ®ГїГ­ГЁГҐ ГЇГ®Г°ГІГ ');
+    DoErrorEvent('Не могу получить состояние порта');
     FError:= -2;
     Exit;
   end;
@@ -125,7 +124,7 @@ begin
   end;
   if not SetCommState(FHandle, _DCB) then
   begin
-    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі ГіГ±ГІГ Г­Г®ГўГЁГІГј Г±Г®Г±ГІГ®ГїГ­ГЁГҐ ГЇГ®Г°ГІГ ');
+    DoErrorEvent('Не могу установить состояние порта');
     FError:= -3;
     Exit;
   end;
@@ -182,19 +181,19 @@ begin
   end;
   if not SetCommTimeouts(FHandle, _CommTimeouts) then
   begin
-    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі ГіГ±ГІГ Г­Г®ГўГЁГІГј ГІГ Г©Г¬Г ГіГІ ГЇГ®Г°ГІГ ');
+    DoErrorEvent('Не могу установить таймаут порта');
     Exit;
   end;
   Result:= True;
 end;
 
-procedure TSerialLink.SendBuffer(var SendBuff: array of char);
+procedure TSerialLink.SendBuffer(var SendBuff: array of byte);
 var
   written,ToSend,i: Cardinal;
   trynmb: Cardinal;
 begin
   ToSend := 0;
-  while (SendBuff[ToSend]<>#255) do ToSend:=ToSend+1;
+  while (SendBuff[ToSend]<>254) do ToSend:=ToSend+1;
   ToSend:=ToSend+1;
   if ToSend>0 then
    begin
@@ -202,7 +201,7 @@ begin
      begin
       if not WriteFile(FHandle, SendBuff, ToSend, written, nil) Or (written <> ToSend) then
       begin
-        DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі Г§Г ГЇГЁГ±Г ГІГј Гў ГЇГ®Г°ГІ');
+        DoErrorEvent('Не могу записать в порт');
         FError:= -4;
         Exit;
       end;
@@ -219,13 +218,13 @@ begin
 //  PurgeComm(FHandle,PURGE_RXCLEAR);
   if not ReadFile(FHandle, RcvBuff, ToReceive, rcvd, nil) then
    begin
-    DoErrorEvent('ГЌГҐ Г¬Г®ГЈГі ГЇГ°Г®Г·ГЁГІГ ГІГј ГЁГ§ ГЇГ®Г°ГІГ ');
+    DoErrorEvent('Не могу прочитать из порта');
     FError:= -5;
     Exit;
    end;
   if rcvd = 0 then
    begin
-    DoErrorEvent('ГЏГіГ±ГІГ®Г© ГЎГіГґГҐГ° ГЇГ®Г°ГІГ ');
+    DoErrorEvent('Пустой буфер порта');
     FError:= -6;
     Exit;
    end;
