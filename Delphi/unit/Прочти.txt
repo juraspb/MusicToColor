@@ -1,0 +1,3 @@
+Модули необходимые для работы программы c FFT
+Кидать в папку
+ Program Files\Borland\Delphi7\Projects\Bpl

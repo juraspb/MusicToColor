@@ -1,3 +1,0 @@
-Модули необходимые для работы программы
-Кидать в папку
- Program Files\Borland\Delphi7\Projects\Bpl
