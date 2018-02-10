@@ -1,9 +1,7 @@
 #include <Adafruit_NeoPixel.h>
-#include <IRremote.h>
  
 #define ledPin 13       // светодиод на плате arduino
 #define stripPin 2      // выход управления светодиодной лентой
-#define irPin 3         // выход управления светодиодной лентой
 #define stripLed 120    // количество светодиодов в ленте
 #define bandPass 20     // число полос ЦМУ (используемых в программах)
 #define LedtoColor stripLed/bandPass
@@ -17,10 +15,7 @@
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(stripLed, stripPin, NEO_GRB + NEO_KHZ800);
-IRrecv irrecv(irPin);
   
-decode_results results;
-
 typedef union{
     struct { uint8_t b,g,r,w; };
     uint32_t dw;
@@ -104,7 +99,6 @@ void setup() {
   clWhite=strip.Color(255, 255, 255);
   clBlack=strip.Color(0, 0, 0);
   Serial.begin(115200);
-  irrecv.enableIRIn(); // Start the receiver
   // reserve 32 bytes for the inputString:
   pinMode(ledPin, OUTPUT);
 }
@@ -1045,33 +1039,6 @@ void serialEvent() {
   }
 }
 
-void processResult(unsigned long code) {
-
-  switch(code)  {
-    case 0xFF906F:
-      if (param>0) param--;
-      break;
-    case 0xFFA857:  
-      if (param<30) param++;
-      break;
-    case 0xFF9867:  //><  
-      subprog++;
-      subprog &= 7;
-      break;
-    case 0xFF6897: param = 0; break; //0
-    case 0xFF30CF: param = 1; break; //1
-    case 0xFF18E7: param = 2; break; //2
-    case 0xFF7A85: param = 3; break; //3
-    case 0xFF10EF: param = 4; break; //4
-    case 0xFF38C7: param = 5; break; //5
-    case 0xFF5AA5: param = 6; break; //6
-    case 0xFF42BD: param = 7; break; //7
-    case 0xFF4AB5: param = 8; break; //8
-    case 0xFF52AD: param = 9; break; //9
-  } 
-  param=paramTabl[param];
-}
-
 void loop(){
 
     if (inComplete) {
@@ -1096,11 +1063,6 @@ void loop(){
       Serial.println("ОК"); // Подтверждение - команда выполнена
     }
     else {
-      if (irrecv.decode(&results)) {
-//        Serial.println(results.value, HEX);
-        processResult(results.value);
-        irrecv.resume(); // Receive the next value
-      } else {
         if (rotate!=0) {
           if (prog<30) {
             if (progStep==0) {
@@ -1153,6 +1115,5 @@ void loop(){
             break; 
           }
         }
-      }
     }
 }

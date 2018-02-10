@@ -2,10 +2,8 @@
 #include <nRF24L01.h>              // Подключаем файл настроек из библиотеки RF24
 #include <RF24.h>                  // Подключаем библиотеку  для работы с nRF24L01+
 #include <Adafruit_NeoPixel.h>
-#include <IRremote.h>
 
 #define stripPin 2     // выход управления светодиодной лентой
-#define irPin 3        // вход IR
 
 #define stripLed 120   // количество светодиодов в ленте
 #define bandPass 20    // полос (групп светодиодов)
@@ -20,9 +18,6 @@
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(stripLed, stripPin, NEO_GRB + NEO_KHZ800);
-IRrecv irrecv(irPin);
-
-decode_results results;
 
 RF24      radio(9, 10);    // Создаём объект radio   для работы с библиотекой RF24, указывая номера выводов nRF24L01+ (CE, CSN)
 
@@ -108,7 +103,6 @@ void setup(){
     Serial.begin(115200);
     strip.begin();
     strip.show(); // Initialize all pixels to 'off'
-    irrecv.enableIRIn(); // Start the receiver
 
     clWhite=strip.Color(255, 255, 255);
     clBlack=strip.Color(0, 0, 0);
@@ -1051,33 +1045,6 @@ void cmdRunning(uint8_t t) {
     }
 }
 
-void processResult(unsigned long code) {
-
-  switch(code)  {
-    case 0xFF906F:
-      if (param>0) param--;
-      break;
-    case 0xFFA857:  
-      if (param<30) param++;
-      break;
-    case 0xFF9867:  //><  
-      subprog++;
-      subprog &= 7;
-      break;
-    case 0xFF6897: param = 0; break; //0
-    case 0xFF30CF: param = 1; break; //1
-    case 0xFF18E7: param = 2; break; //2
-    case 0xFF7A85: param = 3; break; //3
-    case 0xFF10EF: param = 4; break; //4
-    case 0xFF38C7: param = 5; break; //5
-    case 0xFF5AA5: param = 6; break; //6
-    case 0xFF42BD: param = 7; break; //7
-    case 0xFF4AB5: param = 8; break; //8
-    case 0xFF52AD: param = 9; break; //9
-  } 
-  param=paramTabl[param];
-}
-
 void loop(){
 
     if(radio.available()){        // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
@@ -1101,11 +1068,6 @@ void loop(){
         }       
     }
     else {
-      if (irrecv.decode(&results)) {
-//        Serial.println(results.value, HEX);
-        processResult(results.value);
-        irrecv.resume(); // Receive the next value
-      } else {
         if (rotate!=0) {
           if (prog<30) {
             if (progStep==0) {
@@ -1158,7 +1120,6 @@ void loop(){
             break; 
           }
         }
-      }
     }
 }
 
