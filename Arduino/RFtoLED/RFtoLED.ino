@@ -1033,7 +1033,8 @@ void cmdRunning(uint8_t t) {
 
     progStep=0; 
     progSubStep=0;
-    if (prog==0) {
+ 
+    if (prog==1) {
        switch (subprog) {
          case 0: case 1: case 2: { sub00(); break; }
          case 3: case 4: case 5: { sub01(); break; }
@@ -1044,19 +1045,7 @@ void cmdRunning(uint8_t t) {
     else {
       clSet(subprog);
       switch (prog) {
-        case 1: { sub1(); break; };  
-        case 2: { sub2(); break; };  
-        case 3: { sub3(); break; };
-        case 4: { sub4(); break; };  
-        case 5: { sub5(); break; };  
-        case 6: { sub6(); break; };  
-        case 7: { sub7(); break; };  
-        case 8: { sub8(); break; };  
-        case 9: { sub9(); break; };
-        case 10: { progSubStep=stripLed-1; sub10(); break; };
-        case 11: { progSubStep=stripLed-1; sub11(); break; };
-        case 12: { progSubStep=stripLed-1; sub12(); break; };
-        case 29: {
+        case 0: {
           switch (subprog) {
              case 0: { theaterChaseRainbow(); break; }
              case 1: { rainbowCycle(); break; }
@@ -1065,10 +1054,31 @@ void cmdRunning(uint8_t t) {
              case 4: { flashColor1(); break; }
              case 5: { flashColor2(); break; }
              case 6: { flashColor3(); break; }
-             case 7: { stroboscope(t); break; }
+             case 7: { flashColor3(); break; }
           }
           break; 
         }
+        case 1: {
+          switch (subprog) {
+            case 0: case 1: case 2: { sub00(); break; }
+            case 3: case 4: case 5: { sub01(); break; }
+            case 6: { sub06(); break; }
+            case 7: { sub07(); break; }
+          }
+        }
+        case 2: { sub1(); break; };  
+        case 3: { sub2(); break; };  
+        case 4: { sub3(); break; };
+        case 5: { sub4(); break; };  
+        case 6: { sub5(); break; };  
+        case 7: { sub6(); break; };  
+        case 8: { sub7(); break; };  
+        case 9: { sub8(); break; };  
+        case 10: { sub9(); break; };
+        case 11: { progSubStep=stripLed-1; sub10(); break; };
+        case 12: { progSubStep=stripLed-1; sub11(); break; };
+        case 13: { progSubStep=stripLed-1; sub12(); break; };
+        case 14: { stroboscope(t); break; }
       }  
     }
 }
