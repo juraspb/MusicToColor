@@ -104,7 +104,6 @@ TForm1 = class(TForm)
     btn4: TSpeedButton;
     btn6: TSpeedButton;
     btn7: TSpeedButton;
-    btn3: TSpeedButton;
     lbl13: TLabel;
     lbl12: TLabel;
     ts5: TTabSheet;
@@ -130,11 +129,19 @@ TForm1 = class(TForm)
     lbl7: TLabel;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
-    btn8: TSpeedButton;
     SpeedButton3: TSpeedButton;
     SpeedButton4: TSpeedButton;
     btn9: TSpeedButton;
     SpeedButton5: TSpeedButton;
+    SpeedButton6: TSpeedButton;
+    SpeedButton7: TSpeedButton;
+    SpeedButton8: TSpeedButton;
+    SpeedButton9: TSpeedButton;
+    SpeedButton10: TSpeedButton;
+    SpeedButton11: TSpeedButton;
+    SpeedButton12: TSpeedButton;
+    SpeedButton13: TSpeedButton;
+    btn3: TSpeedButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
@@ -336,7 +343,7 @@ begin
       eqBmp.Canvas.FillRect(Rect(j*8,255-zcl[j],j*8+7,255));
     end;
   img1.Picture.Bitmap.Assign(eqBmp);
-  if (zmax<8)and(prog<244) then
+  if (zmax<8)and(prog<236) then
    begin
      if zcount=0 then
       begin
@@ -580,7 +587,7 @@ begin
   ShowInfo;
   if FLink.Active then
    begin
-    if prog<240 then
+    if prog<232 then
      begin
        initCnfg:=True;
        se2.Value:=prog div 8;
@@ -769,8 +776,11 @@ begin
       begin
         brightness:=trckbr2.Position;
         lbl18.Caption:=IntToStr(brightness);
-        programRun(252,param[prog],brightness,rotate);
-        Sleep(200);
+        if pgc1.TabIndex = 1 then
+         begin
+           programRun(252,param[prog],brightness,rotate);
+           Sleep(200);
+         end;
       end;
    end;
 end;

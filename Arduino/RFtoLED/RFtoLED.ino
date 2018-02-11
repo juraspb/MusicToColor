@@ -81,8 +81,11 @@ uint8_t stepN[4] = {0,0,0,0};
 uint8_t waitN[4] = {3,3,4,4};
 uint8_t waitNc[4] = {3,3,4,4};
 uint8_t readData[24];           // Буфер команды
-uint8_t prog = 29;
-uint8_t subprog = 4;
+uint8_t olds[bandPass];  
+int16_t diff[8][bandPass]; 
+uint8_t diffCount = 0;
+uint8_t prog = 0;
+uint8_t subprog = 0;
 uint8_t subcolor = 0;
 uint8_t progStep = 0;
 uint8_t progSubStep = 0;
@@ -111,7 +114,7 @@ void setup(){
 //    radio.setAutoAck(false);
 
     radio.setChannel(5);                        // Указываем канал приёма данных (от 0 до 127), 5 - значит приём данных осуществляется на частоте 2,405 ГГц (на одном канале может быть только 1 приёмник и до 6 передатчиков)
-    radio.setDataRate     (RF24_1MBPS);         // Указываем скорость передачи данных (RF24_250KBPS, RF24_1MBPS, RF24_2MBPS), RF24_1MBPS - 1Мбит/сек
+    radio.setDataRate     (RF24_250KBPS);       // Указываем скорость передачи данных (RF24_250KBPS, RF24_1MBPS, RF24_2MBPS), RF24_1MBPS - 1Мбит/сек
     radio.setPALevel      (RF24_PA_HIGH);       // Указываем мощность передатчика (RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_HIGH=-6dBm, RF24_PA_MAX=0dBm)
     radio.openReadingPipe (1, 0x1234567890LL);  // Открываем 1 трубу с идентификатором 0x1234567890 для приема данных (на ожном канале может быть открыто до 6 разных труб, которые должны отличаться только последним байтом идентификатора)
 
@@ -753,22 +756,75 @@ void skazka() {
   strip.show();
 }
 
+void zmu11() {
+  TColor cl;
+  uint8_t i,k,n;
+  int16_t gain;
+
+  for(i=0; i<bandPass; i++) {
+    diff[diffCount][i]=readData[i]-olds[i];
+    olds[i]=readData[i];
+    gain=0;
+    for(k=0; k<8; k++) gain+=diff[k][i];
+    if (gain<0) gain=-gain;
+    cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
+    cl=mulsGain(cl,gain);
+    n=i*LedtoColor;
+    for(k=0; k<LedtoColor; k++) strip.setPixelColor(n+k, cl.dw);
+  }
+  strip.show();
+}
+
+void zmu12() {
+  TColor cl;
+  uint8_t i,k,j;
+  int16_t gain,m;
+
+  fromCenterShift();
+  m=0;
+  for(i=0; i<bandPass; i++) {
+    diff[diffCount][i]=readData[i]-olds[i];
+    olds[i]=readData[i];
+    gain=0;
+    for(k=0; k<8; k++) gain += diff[k][i];
+    if (gain<0) gain=-gain;
+    if (m<gain) {
+      m=gain;
+      j=i;
+    }
+  }  
+  
+  if (m<6) cl.dw = strip.Color(32, 32, 32);
+  else {
+   if (m<128) cl.dw = clBlack;
+    else {
+      cl.dw = pgm_read_dword(&colorTab[96*j/bandPass]);
+      cl=mulsBrightness(cl);
+      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+    }
+  }
+  strip.setPixelColor(stripLed/2, cl.dw);
+  strip.setPixelColor(stripLed/2-1, cl.dw);
+//  strip.setPixelColor(0, cl.dw);
+//  strip.setPixelColor(stripLed-1, cl.dw);
+  strip.show();
+  diffCount++;
+  diffCount &= 7;
+}
+
 void stroboscope(uint8_t wait) {
-   TColor cl;
-   uint8_t i,j;
+  uint32_t cl;
+  uint8_t i,j;
    
-  cl.dw = strip.Color(255, 255, 255);
-  for(i=0; i<stripLed-1; i++) strip.setPixelColor(i, cl.dw);
+  cl = pgm_read_dword(&colorTab[96*(8-subprog)/8]);
+  for(i=0; i<stripLed-1; i++) strip.setPixelColor(i, cl);
   strip.show();
   delay(wait);
-  cl.dw = strip.Color(0, 0, 0);
-  for(i=0; i<stripLed-1; i++) strip.setPixelColor(i, cl.dw);
+  for(i=0; i<stripLed-1; i++) strip.setPixelColor(i, clBlack);
   strip.show();
-  delay(param);
 }
 
 void flashRandom() {
-  TColor cl;
   
   rndNumber1 = random(stripLed-1);
   strip.setPixelColor(rndNumber1, clWhite);
@@ -911,13 +967,13 @@ uint32_t Wheel(byte WheelPos) {
 }
 
 void setMode() {
-  if (readData[20]<240) {
+  if (readData[20]<232) {
     prog = readData[20]>>3;
     subprog = readData[20] & 7;
   }
   else {
-    prog = 30;
-    subprog = readData[20]-240;
+    prog = 29;
+    subprog = readData[20]-232;
   }
   param = readData[21];
   brightness = readData[22];
@@ -927,18 +983,7 @@ void setMode() {
 
 void clSet(uint8_t spr) {
   TDWord k;
-/*  
-  switch (spr) {
-    case 0: { clN[0].dw=pgm_read_dword(&colorTab[0]);  clN[1].dw=pgm_read_dword(&colorTab[16]); clN[2].dw=pgm_read_dword(&colorTab[64]); clN[3].dw=pgm_read_dword(&colorTab[80]); break; }
-    case 1: { clN[0].dw=pgm_read_dword(&colorTab[16]); clN[1].dw=pgm_read_dword(&colorTab[32]); clN[2].dw=pgm_read_dword(&colorTab[64]); clN[3].dw=pgm_read_dword(&colorTab[48]); break; }
-    case 2: { clN[0].dw=pgm_read_dword(&colorTab[32]); clN[1].dw=pgm_read_dword(&colorTab[64]); clN[2].dw=pgm_read_dword(&colorTab[16]); clN[3].dw=pgm_read_dword(&colorTab[48]); break; }
-    case 3: { clN[0].dw=pgm_read_dword(&colorTab[48]); clN[1].dw=pgm_read_dword(&colorTab[0]);  clN[2].dw=pgm_read_dword(&colorTab[80]); clN[3].dw=pgm_read_dword(&colorTab[16]); break; }
-    case 4: { clN[0].dw=pgm_read_dword(&colorTab[64]); clN[1].dw=pgm_read_dword(&colorTab[16]); clN[2].dw=pgm_read_dword(&colorTab[32]); clN[3].dw=pgm_read_dword(&colorTab[80]); break; }
-    case 5: { clN[0].dw=pgm_read_dword(&colorTab[80]); clN[1].dw=pgm_read_dword(&colorTab[16]); clN[2].dw=pgm_read_dword(&colorTab[0]);  clN[3].dw=pgm_read_dword(&colorTab[48]); break; }
-    case 6: { clN[0].dw=pgm_read_dword(&colorTab[96]); clN[1].dw=pgm_read_dword(&colorTab[64]); clN[2].dw=pgm_read_dword(&colorTab[48]); clN[3].dw=pgm_read_dword(&colorTab[16]); break; }
-    case 7: { clN[0].dw=pgm_read_dword(&colorTab[96]); clN[1].dw=pgm_read_dword(&colorTab[0]);  clN[2].dw=pgm_read_dword(&colorTab[32]); clN[3].dw=pgm_read_dword(&colorTab[64]); break; }
-  }
-*/  
+
   k.dw=pgm_read_dword(&progColor[spr]);
   clN[0].dw=pgm_read_dword(&colorTab[k.b0]);
   clN[1].dw=pgm_read_dword(&colorTab[k.b1]);
@@ -965,19 +1010,21 @@ TColor mulsGain(TColor cl, uint8_t br) {
 }
 
 void cmdMusical() {
-      if (prog==30) {
+      if (prog==29) {
         switch (subprog) {
-           case 0: { zmu1(); break; } // 240
+           case 0: { zmu1(); break; } // 232
            case 1: { zmu2(); break; }
            case 2: { zmu3(); break; }
            case 3: { zmu4(); break; }
            case 4: { zmu5(); break; }
            case 5: { zmu6(); break; }
            case 6: { zmu7(); break; }
-           case 7: { zmu8(); break; } // 247
-           case 8: { zmu9(); break; } // 248
-           case 9: { zmu10(); break; } // 249
-           case 10: { skazka(); break; } // 250
+           case 7: { zmu8(); break; } // 239
+           case 8: { zmu9(); break; } // 240
+           case 9: { zmu10(); break; } // 241
+           case 10: { zmu11(); break; } // 242
+           case 11: { zmu12(); break; } // 243
+           case 12: { skazka(); break; } // 244
         }
       }
 }
@@ -1030,7 +1077,7 @@ void loop(){
 
     if(radio.available()){        // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
       radio.read(&readData, 24);  // Приём команды
-      if (readData[20]<240) { setMode(); cmdRunning(param); }  
+      if (readData[20]<232) { setMode(); cmdRunning(param); }  
         else {
           switch (readData[20]) {
             case 251: { setMode(); ColorWhite(param); strip.show(); break; } // Установка цвета ленты
@@ -1049,58 +1096,60 @@ void loop(){
         }       
     }
     else {
+      if (prog<29) {
         if ((control&1)!=0) {
-          if (prog<30) {
-            if (progStep==0) {
-              if (++rotateStep==0) {
-                prog=random(72);  
-                subprog = prog & 7;
-                prog >>= 3;
-                param = paramTabl[prog];
-                clSet(subprog);
-                rotateStep=pgm_read_byte(&rotateInterval[prog]);
-              }
+          if (progStep==0) {
+            if (++rotateStep==0) {
+              prog=random(72);  
+              subprog = prog & 7;
+              prog >>= 3;
+              param = paramTabl[prog];
+              clSet(subprog);
+              rotateStep=pgm_read_byte(&rotateInterval[prog]);
             }
           }
         }
-        if (prog<29) delay(param);
-        switch (prog) {
-          case 0: {
-           switch (subprog) { 
-            case 0: case 1: case 2: { sub00(); break; }
-            case 3: case 4: case 5: { sub01(); break; }
-            case 6: { sub06(); break; }
-            case 7: { sub07(); break; }
-           }
-           break;
-          }
-          case 1: { sub1(); break; }
-          case 2: { sub2(); break; }
-          case 3: { sub3(); break; }
-          case 4: { sub4(); break; }
-          case 5: { sub5(); break; }
-          case 6: { sub6(); break; }
-          case 7: { sub7(); break; }
-          case 8: { sub8(); break; }
-          case 9: { sub9(); break; }
-          case 10: { sub10(); break; }
-          case 11: { sub11(); break; }
-          case 12: { sub12(); break; }
-          case 29: {
-            switch (subprog) {
-               case 0: { theaterChaseRainbow(); break; }
-               case 1: { rainbowCycle(); break; }
-               case 2: { flashRandom(); break; }
-               case 3: { flashRandomColor(); break; }
-               case 4: { flashColor1(); break; }
-               case 5: { flashColor2(); break; }
-               case 6: { flashColor3(); break; }
-               case 7: { stroboscope(param); break; }
+        if (prog>0) {
+          delay(param);
+          switch (prog) {
+            case 1: {
+             switch (subprog) { 
+              case 0: case 1: case 2: { sub00(); break; }
+              case 3: case 4: case 5: { sub01(); break; }
+              case 6: { sub06(); break; }
+              case 7: { sub07(); break; }
+             }
+             break;
             }
-            progStep++;
-            break; 
+            case 2: { sub1(); break; }
+            case 3: { sub2(); break; }
+            case 4: { sub3(); break; }
+            case 5: { sub4(); break; }
+            case 6: { sub5(); break; }
+            case 7: { sub6(); break; }
+            case 8: { sub7(); break; }
+            case 9: { sub8(); break; }
+            case 10: { sub9(); break; }
+            case 11: { sub10(); break; }
+            case 12: { sub11(); break; }
+            case 13: { sub12(); break; }
+            case 14: { stroboscope(param); progStep++; break; }
           }
         }
+        else {
+          switch (subprog) {
+            case 0: { theaterChaseRainbow(); break; }
+            case 1: { rainbowCycle(); break; }
+            case 2: { flashRandom(); break; }
+            case 3: { flashRandomColor(); break; }
+            case 4: { flashColor1(); break; }
+            case 5: { flashColor2(); break; }
+            case 6: { flashColor3(); break; }
+            case 7: { flashColor3(); break; }
+          }
+          progStep++;
+        }
+      }
     }
 }
 

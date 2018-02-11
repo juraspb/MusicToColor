@@ -1,11 +1,11 @@
 object Form1: TForm1
   Left = 567
-  Top = 231
+  Top = 235
   HorzScrollBar.Visible = False
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1052#1091#1079#1099#1082#1072#1083#1100#1085#1099#1077' '#1086#1075#1085#1080'. ('#1086#1090' @juraspb)'
-  ClientHeight = 315
+  ClientHeight = 321
   ClientWidth = 375
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -227,8 +227,8 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 375
-    Height = 233
-    ActivePage = ts2
+    Height = 244
+    ActivePage = ts1
     Align = alTop
     TabOrder = 0
     object ts1: TTabSheet
@@ -237,7 +237,7 @@ object Form1: TForm1
         Left = 145
         Top = 0
         Width = 222
-        Height = 205
+        Height = 216
         Align = alClient
         ParentShowHint = False
         ShowHint = True
@@ -247,15 +247,15 @@ object Form1: TForm1
         Left = 0
         Top = 0
         Width = 145
-        Height = 205
+        Height = 216
         Align = alLeft
         TabOrder = 0
         object btn11: TSpeedButton
-          Tag = 240
+          Tag = 232
           Left = 6
           Top = 4
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = #1056#1072#1076#1091#1075#1072
@@ -270,11 +270,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object btn1: TSpeedButton
-          Tag = 241
+          Tag = 233
           Left = 73
           Top = 4
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = #1052#1048#1050#1057
@@ -289,11 +289,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object btn10: TSpeedButton
-          Tag = 242
+          Tag = 234
           Left = 6
-          Top = 32
+          Top = 30
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = #1044#1074#1091#1090#1072#1074#1088
@@ -308,11 +308,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object btn13: TSpeedButton
-          Tag = 243
+          Tag = 235
           Left = 73
-          Top = 32
+          Top = 30
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = #1062#1077#1085#1090#1072#1074#1088
@@ -327,11 +327,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object btn14: TSpeedButton
-          Tag = 244
+          Tag = 236
           Left = 6
-          Top = 60
+          Top = 56
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = #1052#1072#1075#1080#1103' <>'
@@ -346,11 +346,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object btn15: TSpeedButton
-          Tag = 250
+          Tag = 246
           Left = 6
-          Top = 144
-          Width = 133
-          Height = 27
+          Top = 186
+          Width = 66
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = 'C'#1082#1072#1079#1082#1072
@@ -365,11 +365,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object btn2: TSpeedButton
-          Tag = 245
+          Tag = 237
           Left = 73
-          Top = 60
+          Top = 56
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = #1052#1072#1075#1080#1103' ><'
@@ -384,11 +384,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object SpeedButton3: TSpeedButton
-          Tag = 246
+          Tag = 238
           Left = 6
-          Top = 88
+          Top = 82
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = #1052'1<>'
@@ -403,11 +403,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object SpeedButton4: TSpeedButton
-          Tag = 247
+          Tag = 239
           Left = 73
-          Top = 88
+          Top = 82
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = #1052'1><'
@@ -422,11 +422,11 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object btn9: TSpeedButton
-          Tag = 248
+          Tag = 240
           Left = 6
-          Top = 116
+          Top = 108
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = 'C1'
@@ -441,14 +441,109 @@ object Form1: TForm1
           OnClick = btn11Click
         end
         object SpeedButton5: TSpeedButton
-          Tag = 249
+          Tag = 241
           Left = 73
-          Top = 116
+          Top = 108
           Width = 66
-          Height = 27
+          Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
           Caption = 'C2'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = btn11Click
+        end
+        object SpeedButton6: TSpeedButton
+          Tag = 242
+          Left = 6
+          Top = 134
+          Width = 66
+          Height = 25
+          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          GroupIndex = 2
+          Caption = 'C1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = btn11Click
+        end
+        object SpeedButton7: TSpeedButton
+          Tag = 243
+          Left = 73
+          Top = 134
+          Width = 66
+          Height = 25
+          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          GroupIndex = 2
+          Caption = 'C2'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = btn11Click
+        end
+        object SpeedButton8: TSpeedButton
+          Tag = 244
+          Left = 6
+          Top = 160
+          Width = 66
+          Height = 25
+          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          GroupIndex = 2
+          Caption = 'C1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = btn11Click
+        end
+        object SpeedButton9: TSpeedButton
+          Tag = 245
+          Left = 73
+          Top = 160
+          Width = 66
+          Height = 25
+          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          GroupIndex = 2
+          Caption = 'C2'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = btn11Click
+        end
+        object btn3: TSpeedButton
+          Tag = 247
+          Left = 73
+          Top = 186
+          Width = 66
+          Height = 25
+          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          GroupIndex = 2
+          Caption = 'C'#1082#1072#1079#1082#1072
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -468,7 +563,7 @@ object Form1: TForm1
         Left = 145
         Top = 0
         Width = 222
-        Height = 205
+        Height = 216
         Hint = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1094#1074#1077#1090' '#1083#1077#1085#1090#1099
         Align = alClient
         ParentShowHint = False
@@ -480,7 +575,7 @@ object Form1: TForm1
         Left = 0
         Top = 0
         Width = 145
-        Height = 205
+        Height = 216
         Align = alLeft
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -503,14 +598,13 @@ object Form1: TForm1
           ParentFont = False
         end
         object btn4: TSpeedButton
-          Tag = 232
           Left = 8
           Top = 70
           Width = 64
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 1
-          Caption = #1056#1072#1076#1091#1075#1072' S'
+          Caption = '1'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -522,92 +616,118 @@ object Form1: TForm1
           OnClick = btn4Click
         end
         object btn6: TSpeedButton
-          Tag = 233
+          Tag = 1
           Left = 74
           Top = 70
           Width = 64
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 1
-          Caption = #1056#1072#1076#1091#1075#1072' '#1058
+          Caption = '2'
           ParentShowHint = False
           ShowHint = True
           OnClick = btn4Click
         end
         object btn7: TSpeedButton
-          Tag = 234
+          Tag = 2
           Left = 8
           Top = 96
           Width = 64
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 1
-          Caption = #1054#1075#1086#1085#1105#1082' '#1041
-          ParentShowHint = False
-          ShowHint = True
-          OnClick = btn4Click
-        end
-        object btn3: TSpeedButton
-          Tag = 239
-          Left = 8
-          Top = 174
-          Width = 129
-          Height = 25
-          Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
-          GroupIndex = 1
-          Caption = #1057#1090#1088#1086#1073#1086#1089#1082#1086#1087
+          Caption = '3'
           ParentShowHint = False
           ShowHint = True
           OnClick = btn4Click
         end
         object btn5: TSpeedButton
-          Tag = 235
+          Tag = 3
           Left = 74
           Top = 96
           Width = 64
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 1
-          Caption = #1054#1075#1086#1085#1105#1082' '#1062
+          Caption = '4'
           ParentShowHint = False
           ShowHint = True
           OnClick = btn4Click
         end
         object SpeedButton1: TSpeedButton
-          Tag = 236
+          Tag = 4
           Left = 8
           Top = 122
           Width = 64
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 1
-          Caption = #1054#1075#1086#1085#1105#1082' '#1052
+          Caption = '5'
           ParentShowHint = False
           ShowHint = True
           OnClick = btn4Click
         end
         object SpeedButton2: TSpeedButton
-          Tag = 237
+          Tag = 5
           Left = 73
           Top = 122
           Width = 64
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 1
-          Caption = #1054#1075#1086#1085#1105#1082' '#1058
+          Caption = '6'
           ParentShowHint = False
           ShowHint = True
           OnClick = btn4Click
         end
-        object btn8: TSpeedButton
-          Tag = 238
+        object SpeedButton10: TSpeedButton
+          Tag = 6
           Left = 8
           Top = 148
-          Width = 129
+          Width = 64
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 1
-          Caption = #1054#1075#1086#1085#1105#1082
+          Caption = '7'
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = btn4Click
+        end
+        object SpeedButton11: TSpeedButton
+          Tag = 7
+          Left = 73
+          Top = 148
+          Width = 64
+          Height = 25
+          Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          GroupIndex = 1
+          Caption = '8'
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = btn4Click
+        end
+        object SpeedButton12: TSpeedButton
+          Tag = 8
+          Left = 8
+          Top = 174
+          Width = 64
+          Height = 25
+          Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          GroupIndex = 1
+          Caption = '9'
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = btn4Click
+        end
+        object SpeedButton13: TSpeedButton
+          Tag = 9
+          Left = 73
+          Top = 174
+          Width = 64
+          Height = 25
+          Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          GroupIndex = 1
+          Caption = '10'
           ParentShowHint = False
           ShowHint = True
           OnClick = btn4Click
@@ -775,7 +895,7 @@ object Form1: TForm1
       end
       object lst1: TListBox
         Left = 0
-        Top = 184
+        Top = 195
         Width = 367
         Height = 21
         Align = alBottom
@@ -3175,9 +3295,9 @@ object Form1: TForm1
   end
   object pnl1: TPanel
     Left = 0
-    Top = 233
+    Top = 244
     Width = 375
-    Height = 82
+    Height = 77
     Align = alClient
     TabOrder = 1
     object lbl2: TLabel
