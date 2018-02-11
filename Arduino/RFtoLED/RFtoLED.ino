@@ -88,7 +88,7 @@ uint8_t progStep = 0;
 uint8_t progSubStep = 0;
 uint8_t progDir = 0;
 uint8_t param = 10;
-uint8_t rotate = 1;
+uint8_t control = 1;
 uint8_t rotateStep = 0;
 uint8_t brightness = 255;
 uint32_t clBlack; 
@@ -455,90 +455,71 @@ void sub07() {
   if (++progStep>8) progStep=0;
 }
 
-void zmu1() {
+uint32_t bandMagn(uint8_t n) {
+//  TWord akk;
   TColor cl;
-  TWord akk;
-  uint8_t i,k,n,gain;
+  uint8_t gain;
+  
+//  akk.w=readData[n]*brightness;
+//  gain=akk.b1;
+  gain=(readData[n]*brightness)>>8;
+  if (magn[n]<fallspeed) magn[n] = 0;
+                    else magn[n] -= fallspeed; 
+  if (magn[n]<gain) magn[n]=gain;
+               else gain=magn[n]; 
+  cl.dw = pgm_read_dword(&colorTab[96*n/bandPass]);
+  cl = mulsGain(cl,gain);
+  return strip.Color(cl.r, cl.g, cl.b);
+}
+
+void zmu1() {
+  uint32_t cl;
+  uint8_t i,k,n;
 
   for(i=0; i<bandPass; i++) {
-      akk.w=readData[i]*brightness;
-      gain=akk.b1;
-      if (magn[i]<fallspeed) magn[i] = 0;
-                        else magn[i] -= fallspeed; 
-      if (magn[i]<gain) magn[i]=gain;
-                   else gain=magn[i]; 
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl=mulsGain(cl,gain);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+      cl = bandMagn(i);
       n=i*LedtoColor;
-      for(k=0; k<LedtoColor; k++) strip.setPixelColor(n+k, cl.dw);
+      for(k=0; k<LedtoColor; k++) strip.setPixelColor(n+k, cl);
   }
   strip.show();
 }
 
 void zmu2() {
-  TColor cl;
-  TWord akk;
-  uint8_t i,k,gain;
+  uint32_t cl;
+  uint8_t i,k;
 
   for(i=0; i<bandPass; i++) {
-      akk.w=readData[i]*brightness;
-      gain=akk.b1;
-      if (magn[i]<fallspeed) magn[i] = 0;
-                        else magn[i] -= fallspeed; 
-      if (magn[i]<gain) magn[i]=gain;
-                else gain=magn[i]; 
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl=mulsGain(cl,gain);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
-      for(k=0; k<LedtoColor; k++) strip.setPixelColor(i+k*bandPass, cl.dw);
+      cl = bandMagn(i);
+      for(k=0; k<LedtoColor; k++) strip.setPixelColor(i+k*bandPass, cl);
   }
   strip.show();
 }
 
 void zmu3() {
-  TColor cl;
-  TWord akk;
-  uint8_t n,i,k,gain;
+  uint32_t cl;
+  uint8_t n,i,k;
 
   for(i=0; i<bandPass; i++) {
-      if (magn[i]<fallspeed) magn[i] = 0;
-                        else magn[i] -= fallspeed; 
-      akk.w=readData[i]*brightness;
-      gain=akk.b1;
-      if (magn[i]<gain) magn[i]=gain;
-                   else gain=magn[i]; 
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl=mulsGain(cl,gain);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+      cl = bandMagn(i);
       n=i*LedtoColor/2;
       for(k=0; k<LedtoColor/2; k++) {
-        strip.setPixelColor(n+k, cl.dw);
-        strip.setPixelColor(stripLed-(n+k)-1, cl.dw);
+        strip.setPixelColor(n+k, cl);
+        strip.setPixelColor(stripLed-(n+k)-1, cl);
       }
   }
   strip.show();
 }
 
 void zmu4() {
-  TColor cl;
-  TWord akk;
-  uint8_t n,i,k,gain;
+  uint32_t cl;
+  uint8_t n,i,k;
 
   for(i=0; i<bandPass; i++) {
-      if (magn[i]<fallspeed) magn[i] = 0;
-                        else magn[i] -= fallspeed; 
-      akk.w=readData[i]*brightness;
-      gain=akk.b1;
-      if (magn[i]<gain) magn[i]=gain;
-                   else gain=magn[i]; 
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl=mulsGain(cl,gain);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+      cl = bandMagn(i);
       n=i*LedtoColor/2;
       for(k=0; k<LedtoColor/2; k++) {
-        strip.setPixelColor(stripLed/2+n+k, cl.dw);
-        strip.setPixelColor(stripLed/2-(n+k)-1, cl.dw);
+        strip.setPixelColor(stripLed/2+n+k, cl);
+        strip.setPixelColor(stripLed/2-(n+k)-1, cl);
       }
   }
   strip.show();
@@ -940,7 +921,7 @@ void setMode() {
   }
   param = readData[21];
   brightness = readData[22];
-  rotate = readData[23];
+  control = readData[23];
   paramTabl[prog]=param;
 }
 
@@ -1056,8 +1037,8 @@ void loop(){
             case 252: {                                                      // Изменение параметров
               param = readData[21];
               brightness = readData[22];
-              rotate = readData[23];
-              if (rotate>0) {
+              control = readData[23];
+              if ((control&1)>0) {
                 if (prog>12) prog=0;
                 rotateStep=pgm_read_byte(&rotateInterval[prog]);
               }
@@ -1068,7 +1049,7 @@ void loop(){
         }       
     }
     else {
-        if (rotate!=0) {
+        if ((control&1)!=0) {
           if (prog<30) {
             if (progStep==0) {
               if (++rotateStep==0) {
