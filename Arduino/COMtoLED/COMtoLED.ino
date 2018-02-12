@@ -69,6 +69,9 @@ uint8_t waitNc[4] = {3,3,4,4};
 uint8_t magn[20] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};  
 uint8_t threshold[20] = {192,192,192,192,192,160,160,160,128,128,128,112,112,112,96,96,96,80,80,80};  
 uint8_t paramTabl[32] = {20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20};
+uint8_t olds[bandPass];  
+int16_t diff[8][bandPass]; 
+uint8_t diffCount = 0;
 uint8_t inCounter = 0;
 boolean inComplete = false;
 uint8_t prog = 29;
@@ -79,7 +82,7 @@ uint8_t progStep = 0;
 uint8_t progSubStep = 0;
 uint8_t progDir = 0;
 uint8_t brightness = 255;
-uint8_t rotate = 1;
+uint8_t control = 1;
 uint8_t rotateStep = 0;
 uint8_t dist = 0;
 uint32_t clBlack; 
@@ -438,90 +441,71 @@ void sub07() {
   if (++progStep>8) progStep=0;
 }
 
-void zmu1() {
+uint32_t bandMagn(uint8_t n) {
+//  TWord akk;
   TColor cl;
-  TWord akk;
-  uint8_t i,k,n,gain;
+  uint8_t gain;
+  
+//  akk.w=readData[n]*brightness;
+//  gain=akk.b1;
+  gain=(readData[n]*brightness)>>8;
+  if (magn[n]<fallspeed) magn[n] = 0;
+                    else magn[n] -= fallspeed; 
+  if (magn[n]<gain) magn[n]=gain;
+               else gain=magn[n]; 
+  cl.dw = pgm_read_dword(&colorTab[96*n/bandPass]);
+  cl = mulsGain(cl,gain);
+  return strip.Color(cl.r, cl.g, cl.b);
+}
+
+void zmu1() {
+  uint32_t cl;
+  uint8_t i,k,n;
 
   for(i=0; i<bandPass; i++) {
-      akk.w=readData[i]*brightness;
-      gain=akk.b1;
-      if (magn[i]<fallspeed) magn[i] = 0;
-                        else magn[i] -= fallspeed; 
-      if (magn[i]<gain) magn[i]=gain;
-                   else gain=magn[i]; 
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl=mulsGain(cl,gain);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+      cl = bandMagn(i);
       n=i*LedtoColor;
-      for(k=0; k<LedtoColor; k++) strip.setPixelColor(n+k, cl.dw);
+      for(k=0; k<LedtoColor; k++) strip.setPixelColor(n+k, cl);
   }
   strip.show();
 }
 
 void zmu2() {
-  TColor cl;
-  TWord akk;
-  uint8_t i,k,gain;
+  uint32_t cl;
+  uint8_t i,k;
 
   for(i=0; i<bandPass; i++) {
-      akk.w=readData[i]*brightness;
-      gain=akk.b1;
-      if (magn[i]<fallspeed) magn[i] = 0;
-                        else magn[i] -= fallspeed; 
-      if (magn[i]<gain) magn[i]=gain;
-                else gain=magn[i]; 
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl=mulsGain(cl,gain);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
-      for(k=0; k<LedtoColor; k++) strip.setPixelColor(i+k*bandPass, cl.dw);
+      cl = bandMagn(i);
+      for(k=0; k<LedtoColor; k++) strip.setPixelColor(i+k*bandPass, cl);
   }
   strip.show();
 }
 
 void zmu3() {
-  TColor cl;
-  TWord akk;
-  uint8_t n,i,k,gain;
+  uint32_t cl;
+  uint8_t n,i,k;
 
   for(i=0; i<bandPass; i++) {
-      if (magn[i]<fallspeed) magn[i] = 0;
-                        else magn[i] -= fallspeed; 
-      akk.w=readData[i]*brightness;
-      gain=akk.b1;
-      if (magn[i]<gain) magn[i]=gain;
-                   else gain=magn[i]; 
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl=mulsGain(cl,gain);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+      cl = bandMagn(i);
       n=i*LedtoColor/2;
       for(k=0; k<LedtoColor/2; k++) {
-        strip.setPixelColor(n+k, cl.dw);
-        strip.setPixelColor(stripLed-(n+k)-1, cl.dw);
+        strip.setPixelColor(n+k, cl);
+        strip.setPixelColor(stripLed-(n+k)-1, cl);
       }
   }
   strip.show();
 }
 
 void zmu4() {
-  TColor cl;
-  TWord akk;
-  uint8_t n,i,k,gain;
+  uint32_t cl;
+  uint8_t n,i,k;
 
   for(i=0; i<bandPass; i++) {
-      if (magn[i]<fallspeed) magn[i] = 0;
-                        else magn[i] -= fallspeed; 
-      akk.w=readData[i]*brightness;
-      gain=akk.b1;
-      if (magn[i]<gain) magn[i]=gain;
-                   else gain=magn[i]; 
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl=mulsGain(cl,gain);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+      cl = bandMagn(i);
       n=i*LedtoColor/2;
       for(k=0; k<LedtoColor/2; k++) {
-        strip.setPixelColor(stripLed/2+n+k, cl.dw);
-        strip.setPixelColor(stripLed/2-(n+k)-1, cl.dw);
+        strip.setPixelColor(stripLed/2+n+k, cl);
+        strip.setPixelColor(stripLed/2-(n+k)-1, cl);
       }
   }
   strip.show();
@@ -755,6 +739,61 @@ void skazka() {
   strip.show();
 }
 
+void zmu11() {
+  TColor cl;
+  uint8_t i,k,n;
+  int16_t gain;
+
+  for(i=0; i<bandPass; i++) {
+    diff[diffCount][i]=readData[i]-olds[i];
+    olds[i]=readData[i];
+    gain=0;
+    for(k=0; k<8; k++) gain+=diff[k][i];
+    if (gain<0) gain=-gain;
+    cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
+    cl=mulsGain(cl,gain);
+    n=i*LedtoColor;
+    for(k=0; k<LedtoColor; k++) strip.setPixelColor(n+k, cl.dw);
+  }
+  strip.show();
+}
+
+void zmu12() {
+  TColor cl;
+  uint8_t i,k,j;
+  int16_t gain,m;
+
+  fromCenterShift();
+  m=0;
+  for(i=0; i<bandPass; i++) {
+    diff[diffCount][i]=readData[i]-olds[i];
+    olds[i]=readData[i];
+    gain=0;
+    for(k=0; k<8; k++) gain += diff[k][i];
+    if (gain<0) gain=-gain;
+    if (m<gain) {
+      m=gain;
+      j=i;
+    }
+  }  
+  
+  if (m<6) cl.dw = strip.Color(32, 32, 32);
+  else {
+   if (m<128) cl.dw = clBlack;
+    else {
+      cl.dw = pgm_read_dword(&colorTab[96*j/bandPass]);
+      cl=mulsBrightness(cl);
+      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+    }
+  }
+  strip.setPixelColor(stripLed/2, cl.dw);
+  strip.setPixelColor(stripLed/2-1, cl.dw);
+//  strip.setPixelColor(0, cl.dw);
+//  strip.setPixelColor(stripLed-1, cl.dw);
+  strip.show();
+  diffCount++;
+  diffCount &= 7;
+}
 
 void stroboscope(uint8_t wait) {
    TColor cl;
@@ -767,7 +806,6 @@ void stroboscope(uint8_t wait) {
   cl.dw = strip.Color(0, 0, 0);
   for(i=0; i<stripLed-1; i++) strip.setPixelColor(i, cl.dw);
   strip.show();
-  delay(wait);
 }
 
 void flashRandom() {
@@ -924,7 +962,7 @@ void setMode() {
   }
   param = readData[21];
   brightness = readData[22];
-  rotate = readData[23];
+  control = readData[23];
   paramTabl[prog]=param;
 }
 
@@ -956,27 +994,31 @@ TColor mulsGain(TColor cl, uint8_t br) {
 }
 
 void cmdMusical() {
-      if (prog==30) {
+      if (prog==29) {
         switch (subprog) {
-           case 0: { zmu1(); break; } // 240
+           case 0: { zmu1(); break; } // 232
            case 1: { zmu2(); break; }
            case 2: { zmu3(); break; }
            case 3: { zmu4(); break; }
            case 4: { zmu5(); break; }
            case 5: { zmu6(); break; }
            case 6: { zmu7(); break; }
-           case 7: { zmu8(); break; } // 247
-           case 8: { zmu9(); break; } // 248
-           case 9: { zmu10(); break; } // 249
-           case 10: { skazka(); break; } // 250
+           case 7: { zmu8(); break; } // 239
+           case 8: { zmu9(); break; } // 240
+           case 9: { zmu10(); break; } // 241
+           case 10: { zmu11(); break; } // 242
+           case 11: { zmu12(); break; } // 243
+           case 12: { skazka(); break; } // 244
         }
       }
 }
 
 void cmdRunning(uint8_t t) {
+
     progStep=0; 
     progSubStep=0;
-    if (prog==0) {
+ 
+    if (prog==1) {
        switch (subprog) {
          case 0: case 1: case 2: { sub00(); break; }
          case 3: case 4: case 5: { sub01(); break; }
@@ -987,19 +1029,7 @@ void cmdRunning(uint8_t t) {
     else {
       clSet(subprog);
       switch (prog) {
-        case 1: { sub1(); break; };  
-        case 2: { sub2(); break; };  
-        case 3: { sub3(); break; };
-        case 4: { sub4(); break; };  
-        case 5: { sub5(); break; };  
-        case 6: { sub6(); break; };  
-        case 7: { sub7(); break; };  
-        case 8: { sub8(); break; };  
-        case 9: { sub9(); break; };
-        case 10: { progSubStep=stripLed-1; sub10(); break; };
-        case 11: { progSubStep=stripLed-1; sub11(); break; };
-        case 12: { progSubStep=stripLed-1; sub12(); break; };
-       case 29: {
+        case 0: {
           switch (subprog) {
              case 0: { theaterChaseRainbow(); break; }
              case 1: { rainbowCycle(); break; }
@@ -1008,10 +1038,31 @@ void cmdRunning(uint8_t t) {
              case 4: { flashColor1(); break; }
              case 5: { flashColor2(); break; }
              case 6: { flashColor3(); break; }
-             case 7: { stroboscope(t); break; }
+             case 7: { flashColor3(); break; }
           }
           break; 
         }
+        case 1: {
+          switch (subprog) {
+            case 0: case 1: case 2: { sub00(); break; }
+            case 3: case 4: case 5: { sub01(); break; }
+            case 6: { sub06(); break; }
+            case 7: { sub07(); break; }
+          }
+        }
+        case 2: { sub1(); break; };  
+        case 3: { sub2(); break; };  
+        case 4: { sub3(); break; };
+        case 5: { sub4(); break; };  
+        case 6: { sub5(); break; };  
+        case 7: { sub6(); break; };  
+        case 8: { sub7(); break; };  
+        case 9: { sub8(); break; };  
+        case 10: { sub9(); break; };
+        case 11: { progSubStep=stripLed-1; sub10(); break; };
+        case 12: { progSubStep=stripLed-1; sub11(); break; };
+        case 13: { progSubStep=stripLed-1; sub12(); break; };
+        case 14: { stroboscope(t); break; }
       }  
     }
 }
@@ -1050,8 +1101,8 @@ void loop(){
              case 252: {  // Изменение параметров
               param = readData[21];
               brightness = readData[22];
-              rotate = readData[23];
-              if (rotate>0) {
+              control = readData[23];
+              if (control>0) {
                 if (prog>12) prog=0;
                  rotateStep=pgm_read_byte(&rotateInterval[prog]);
               }
@@ -1063,57 +1114,59 @@ void loop(){
       Serial.println("ОК"); // Подтверждение - команда выполнена
     }
     else {
-        if (rotate!=0) {
-          if (prog<30) {
-            if (progStep==0) {
-              if (++rotateStep==0) {
-                prog=random(12*8);  
-                subprog = prog & 7;
-                prog >>= 3;
-                param = paramTabl[prog];
-                clSet(subprog);
-                rotateStep=pgm_read_byte(&rotateInterval[prog]);
-              }
+      if (prog<29) {
+        if ((control&1)!=0) {
+          if (progStep==0) {
+            if (++rotateStep==0) {
+              prog=random(72);  
+              subprog = prog & 7;
+              prog >>= 3;
+              param = paramTabl[prog];
+              clSet(subprog);
+              rotateStep=pgm_read_byte(&rotateInterval[prog]);
             }
           }
         }
-        if (prog<29) delay(param);
-        switch (prog) {
-          case 0: {
-           switch (subprog) { 
-            case 0: case 1: case 2: { sub00(); break; }
-            case 3: case 4: case 5: { sub01(); break; }
-            case 6: { sub06(); break; }
-            case 7: { sub07(); break; }
-           }
-           break;
-          } 
-          case 1: { sub1(); break; }
-          case 2: { sub2(); break; }
-          case 3: { sub3(); break; }
-          case 4: { sub4(); break; }
-          case 5: { sub5(); break; }
-          case 6: { sub6(); break; }
-          case 7: { sub7(); break; }
-          case 8: { sub8(); break; }
-          case 9: { sub9(); break; }
-          case 10: { sub10(); break; }
-          case 11: { sub11(); break; }
-          case 12: { sub12(); break; }
-          case 29: {
-            switch (subprog) {
-               case 0: { theaterChaseRainbow(); break; }
-               case 1: { rainbowCycle(); break; }
-               case 2: { flashRandom(); break; }
-               case 3: { flashRandomColor(); break; }
-               case 4: { flashColor1(); break; }
-               case 5: { flashColor2(); break; }
-               case 6: { flashColor3(); break; }
-               case 7: { stroboscope(param); break; }
+        if (prog>0) {
+          delay(param);
+          switch (prog) {
+            case 1: {
+             switch (subprog) { 
+              case 0: case 1: case 2: { sub00(); break; }
+              case 3: case 4: case 5: { sub01(); break; }
+              case 6: { sub06(); break; }
+              case 7: { sub07(); break; }
+             }
+             break;
             }
-            progStep++;
-            break; 
+            case 2: { sub1(); break; }
+            case 3: { sub2(); break; }
+            case 4: { sub3(); break; }
+            case 5: { sub4(); break; }
+            case 6: { sub5(); break; }
+            case 7: { sub6(); break; }
+            case 8: { sub7(); break; }
+            case 9: { sub8(); break; }
+            case 10: { sub9(); break; }
+            case 11: { sub10(); break; }
+            case 12: { sub11(); break; }
+            case 13: { sub12(); break; }
+            case 14: { stroboscope(param); progStep++; break; }
           }
         }
+        else {
+          switch (subprog) {
+            case 0: { theaterChaseRainbow(); break; }
+            case 1: { rainbowCycle(); break; }
+            case 2: { flashRandom(); break; }
+            case 3: { flashRandomColor(); break; }
+            case 4: { flashColor1(); break; }
+            case 5: { flashColor2(); break; }
+            case 6: { flashColor3(); break; }
+            case 7: { flashColor3(); break; }
+          }
+          progStep++;
+        }
+      }
     }
 }
