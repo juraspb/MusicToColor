@@ -228,7 +228,7 @@ object Form1: TForm1
     Top = 0
     Width = 375
     Height = 244
-    ActivePage = ts1
+    ActivePage = ts2
     Align = alTop
     TabOrder = 0
     object ts1: TTabSheet
@@ -736,7 +736,7 @@ object Form1: TForm1
           Left = 20
           Top = 32
           Width = 41
-          Height = 30
+          Height = 31
           Hint = 'Choise programm'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText

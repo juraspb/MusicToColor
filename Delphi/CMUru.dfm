@@ -332,9 +332,9 @@ object Form1: TForm1
           Top = 56
           Width = 66
           Height = 25
-          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          Hint = #1086#1090' '#1094#1077#1085#1090#1088#1072
           GroupIndex = 2
-          Caption = #1052#1072#1075#1080#1103' <>'
+          Caption = #1052#1072#1075#1080#1103
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -353,7 +353,7 @@ object Form1: TForm1
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
-          Caption = 'C'#1082#1072#1079#1082#1072
+          Caption = #1064#1072#1088#1084
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -370,9 +370,9 @@ object Form1: TForm1
           Top = 56
           Width = 66
           Height = 25
-          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          Hint = #1082' '#1094#1077#1085#1090#1088#1091
           GroupIndex = 2
-          Caption = #1052#1072#1075#1080#1103' ><'
+          Caption = #1052#1072#1075#1080#1103
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -389,9 +389,9 @@ object Form1: TForm1
           Top = 82
           Width = 66
           Height = 25
-          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          Hint = #1086#1090' '#1094#1077#1085#1090#1088#1072
           GroupIndex = 2
-          Caption = #1052'1<>'
+          Caption = #1060#1077#1077#1088#1080#1103
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -408,9 +408,9 @@ object Form1: TForm1
           Top = 82
           Width = 66
           Height = 25
-          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          Hint = #1082' '#1094#1077#1085#1090#1088#1091
           GroupIndex = 2
-          Caption = #1052'1><'
+          Caption = #1060#1077#1077#1088#1080#1103
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -427,9 +427,9 @@ object Form1: TForm1
           Top = 108
           Width = 66
           Height = 25
-          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          Hint = #1086#1090' '#1094#1077#1085#1090#1088#1072
           GroupIndex = 2
-          Caption = 'C1'
+          Caption = #1040#1083#1083#1102#1088
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -446,9 +446,9 @@ object Form1: TForm1
           Top = 108
           Width = 66
           Height = 25
-          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          Hint = #1082' '#1094#1077#1085#1090#1088#1091
           GroupIndex = 2
-          Caption = 'C2'
+          Caption = #1040#1083#1083#1102#1088
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -467,7 +467,7 @@ object Form1: TForm1
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
-          Caption = 'C1'
+          Caption = 'C'#1082#1072#1079#1082#1072
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -486,7 +486,7 @@ object Form1: TForm1
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
-          Caption = 'C2'
+          Caption = #1059#1088#1086#1074#1077#1085#1100
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -505,10 +505,10 @@ object Form1: TForm1
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
-          Caption = 'C1'
+          Caption = #1044#1074#1091#1090#1072#1074#1088'10'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -13
+          Font.Height = -12
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
@@ -524,10 +524,10 @@ object Form1: TForm1
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
-          Caption = 'C2'
+          Caption = #1062#1077#1085#1090#1072#1074#1088'10'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -13
+          Font.Height = -12
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
@@ -543,10 +543,10 @@ object Form1: TForm1
           Height = 25
           Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           GroupIndex = 2
-          Caption = 'C'#1082#1072#1079#1082#1072
+          Caption = #1056#1072#1076#1091#1075#1072'10'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -13
+          Font.Height = -12
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
@@ -557,7 +557,7 @@ object Form1: TForm1
       end
     end
     object ts2: TTabSheet
-      Caption = #1041#1077#1075#1091#1097#1080#1077
+      Caption = #1044#1080#1085#1072#1084#1080#1095#1077#1089#1082#1080#1077
       ImageIndex = 1
       object img2: TImage
         Left = 145
@@ -597,7 +597,7 @@ object Form1: TForm1
           Font.Style = [fsBold]
           ParentFont = False
         end
-        object btn4: TSpeedButton
+        object btnD1: TSpeedButton
           Left = 8
           Top = 70
           Width = 64
@@ -613,9 +613,9 @@ object Form1: TForm1
           ParentFont = False
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object btn6: TSpeedButton
+        object btnD2: TSpeedButton
           Tag = 1
           Left = 74
           Top = 70
@@ -626,9 +626,9 @@ object Form1: TForm1
           Caption = '2'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object btn7: TSpeedButton
+        object btnD3: TSpeedButton
           Tag = 2
           Left = 8
           Top = 96
@@ -639,9 +639,9 @@ object Form1: TForm1
           Caption = '3'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object btn5: TSpeedButton
+        object btnD4: TSpeedButton
           Tag = 3
           Left = 74
           Top = 96
@@ -652,9 +652,9 @@ object Form1: TForm1
           Caption = '4'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton1: TSpeedButton
+        object btnD5: TSpeedButton
           Tag = 4
           Left = 8
           Top = 122
@@ -665,9 +665,9 @@ object Form1: TForm1
           Caption = '5'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton2: TSpeedButton
+        object btnD6: TSpeedButton
           Tag = 5
           Left = 73
           Top = 122
@@ -678,9 +678,9 @@ object Form1: TForm1
           Caption = '6'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton10: TSpeedButton
+        object btnD7: TSpeedButton
           Tag = 6
           Left = 8
           Top = 148
@@ -691,9 +691,9 @@ object Form1: TForm1
           Caption = '7'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton11: TSpeedButton
+        object btnD8: TSpeedButton
           Tag = 7
           Left = 73
           Top = 148
@@ -704,9 +704,9 @@ object Form1: TForm1
           Caption = '8'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton12: TSpeedButton
+        object btnD9: TSpeedButton
           Tag = 8
           Left = 8
           Top = 174
@@ -717,9 +717,9 @@ object Form1: TForm1
           Caption = '9'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton13: TSpeedButton
+        object btnD10: TSpeedButton
           Tag = 9
           Left = 73
           Top = 174
@@ -730,7 +730,7 @@ object Form1: TForm1
           Caption = '10'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
         object se2: TSpinEdit
           Left = 20
@@ -912,7 +912,7 @@ object Form1: TForm1
         Top = 40
         Width = 150
         Height = 16
-        Caption = #1042#1077#1088#1089#1080#1103' 5.9 '#1086#1090' 01.02.2018'
+        Caption = #1042#1077#1088#1089#1080#1103' 6.1 '#1086#1090' 18.02.2018'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -991,9 +991,9 @@ object Form1: TForm1
       object lbl11: TLabel
         Left = 134
         Top = 64
-        Width = 78
+        Width = 74
         Height = 16
-        Caption = #1053#1086#1074#1086#1075#1086#1076#1085#1103#1103
+        Caption = #1052#1072#1089#1083#1077#1085#1080#1094#1072
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -1103,7 +1103,7 @@ object Form1: TForm1
         Left = 0
         Top = 0
         Width = 367
-        Height = 205
+        Height = 216
         Hint = #1055#1088#1086#1089#1090#1072#1103' '#1089#1093#1077#1084#1072' '#1074#1082#1083#1102#1095#1077#1085#1080#1103
         Align = alClient
         ParentShowHint = False
@@ -3370,37 +3370,37 @@ object Form1: TForm1
     Left = 316
     Top = 32
     object N1: TMenuItem
-      Tag = 240
+      Tag = 232
       Caption = #1056#1072#1076#1091#1075#1072
       OnClick = N1Click
     end
     object N2: TMenuItem
-      Tag = 241
+      Tag = 233
       Caption = #1052#1048#1050#1057
       OnClick = N1Click
     end
     object N3: TMenuItem
-      Tag = 242
+      Tag = 234
       Caption = #1044#1074#1091#1090#1072#1074#1088
       OnClick = N1Click
     end
     object N4: TMenuItem
-      Tag = 243
+      Tag = 235
       Caption = #1062#1077#1085#1090#1072#1074#1088
       OnClick = N1Click
     end
     object N7: TMenuItem
-      Tag = 244
+      Tag = 236
       Caption = #1052#1072#1075#1080#1103' <|>'
       OnClick = N1Click
     end
     object N31: TMenuItem
-      Tag = 245
+      Tag = 237
       Caption = #1052#1072#1075#1080#1103' >|<'
       OnClick = N1Click
     end
     object N6: TMenuItem
-      Tag = 251
+      Tag = 252
       Caption = #1042#1099#1082#1083#1102#1095#1080#1090#1100
       OnClick = N1Click
     end

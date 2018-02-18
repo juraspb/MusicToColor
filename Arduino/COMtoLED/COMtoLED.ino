@@ -2,8 +2,8 @@
  
 #define ledPin 13       // светодиод на плате arduino
 #define stripPin 2      // выход управления светодиодной лентой
-#define stripLed 120    // количество светодиодов в ленте
-#define bandPass 20     // число полос ЦМУ (используемых в программах)
+#define stripLed 20    // количество светодиодов в ленте
+#define bandPass 10     // число полос ЦМУ (используемых в программах)
 #define LedtoColor stripLed/bandPass
 #define fallspeed 15
 
@@ -74,9 +74,9 @@ int16_t diff[8][bandPass];
 uint8_t diffCount = 0;
 uint8_t inCounter = 0;
 boolean inComplete = false;
-uint8_t prog = 29;
+uint8_t prog = 2;
 uint8_t param = 100;
-uint8_t subprog = 4;
+uint8_t subprog = 7;
 uint8_t subcolor = 0;
 uint8_t progStep = 0;
 uint8_t progSubStep = 0;
@@ -458,7 +458,7 @@ uint32_t bandMagn(uint8_t n) {
   return strip.Color(cl.r, cl.g, cl.b);
 }
 
-void zmu1() {
+void zRainbow() {
   uint32_t cl;
   uint8_t i,k,n;
 
@@ -470,7 +470,22 @@ void zmu1() {
   strip.show();
 }
 
-void zmu2() {
+void zRainbow10() {
+  TColor cl;
+  uint8_t gain;
+  uint8_t n;
+  
+  for(uint8_t i=0; i<bandPass/2; i++) {
+      gain=((readData[i*2]+readData[i*2+1])*brightness)>>8;
+      cl.dw = pgm_read_dword(&colorTab[96*i/(bandPass/2)]);
+      cl = mulsGain(cl,gain);
+      n=i*stripLed/(bandPass/2);
+      for(uint8_t k=0; k<stripLed/6; k++) strip.setPixelColor(n+k, cl.dw);
+  }
+  strip.show();
+}
+
+void zMIX() {
   uint32_t cl;
   uint8_t i,k;
 
@@ -481,7 +496,7 @@ void zmu2() {
   strip.show();
 }
 
-void zmu3() {
+void zIBeam() {
   uint32_t cl;
   uint8_t n,i,k;
 
@@ -496,7 +511,7 @@ void zmu3() {
   strip.show();
 }
 
-void zmu4() {
+void zMidland() {
   uint32_t cl;
   uint8_t n,i,k;
 
@@ -527,7 +542,7 @@ void toCenterShift() {
   for(i=stripLed/2-1; i>0; i--) { c=strip.getPixelColor(i-1); strip.setPixelColor(i,c); }
 }
 
-void zmu5() {
+void zMagicFrom() {
   TColor cl;
   uint32_t clW;
   uint8_t i,k,j;
@@ -552,7 +567,7 @@ void zmu5() {
   strip.show();
 }
 
-void zmu6() {
+void zMagicTo() {
   TColor cl;
   uint32_t clW;
   uint8_t i,k,j;
@@ -577,7 +592,77 @@ void zmu6() {
   strip.show();
 }
 
-void zmu7() {
+void zFeeryFrom() {
+  TColor cl;
+  uint8_t i,k,j;
+  int16_t gain,m;
+
+  fromCenterShift();
+  m=0;
+  for(i=0; i<bandPass; i++) {
+    diff[diffCount][i]=readData[i]-olds[i];
+    olds[i]=readData[i];
+    gain=0;
+    for(k=0; k<8; k++) gain += diff[k][i];
+    if (gain<0) gain=-gain;
+    if (m<gain) {
+      m=gain;
+      j=i;
+    }
+  }  
+  
+  if (m<6) cl.dw = strip.Color(32, 32, 32);
+  else {
+   if (m<128) cl.dw = clBlack;
+    else {
+      cl.dw = pgm_read_dword(&colorTab[96*j/bandPass]);
+      cl=mulsBrightness(cl);
+      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+    }
+  }
+  strip.setPixelColor(stripLed/2, cl.dw);
+  strip.setPixelColor(stripLed/2-1, cl.dw);
+  strip.show();
+  diffCount++;
+  diffCount &= 7;
+}
+
+void zFeeryTo() {
+  TColor cl;
+  uint8_t i,k,j;
+  int16_t gain,m;
+
+  toCenterShift();
+  m=0;
+  for(i=0; i<bandPass; i++) {
+    diff[diffCount][i]=readData[i]-olds[i];
+    olds[i]=readData[i];
+    gain=0;
+    for(k=0; k<8; k++) gain += diff[k][i];
+    if (gain<0) gain=-gain;
+    if (m<gain) {
+      m=gain;
+      j=i;
+    }
+  }  
+  
+  if (m<6) cl.dw = strip.Color(32, 32, 32);
+  else {
+   if (m<128) cl.dw = clBlack;
+    else {
+      cl.dw = pgm_read_dword(&colorTab[96*j/bandPass]);
+      cl=mulsBrightness(cl);
+      cl.dw = strip.Color(cl.r, cl.g, cl.b);
+    }
+  }
+  strip.setPixelColor(0, cl.dw);
+  strip.setPixelColor(stripLed-1, cl.dw);
+  strip.show();
+  diffCount++;
+  diffCount &= 7;
+}
+
+void zAllureFrom() {
   TColor cl;
   uint32_t clW;
   uint8_t i,k,m;
@@ -604,7 +689,7 @@ void zmu7() {
   strip.show();
 }
 
-void zmu8() {
+void zAllureTo() {
   TColor cl;
   uint32_t clW;
   uint8_t i,k,m;
@@ -631,43 +716,39 @@ void zmu8() {
   strip.show();
 }
 
-void zmu9() {
+void skazka() {
   TColor cl;
-  uint8_t i,k,j;
-  uint16_t summ = 0;
-  uint16_t n;
+  TWord akk;
+  uint8_t i;
+  uint16_t thsumm = 0;
+  uint8_t th;
 
-  for(i=0; i<bandPass; i++) {
-    if (magn[i]<fallspeed) magn[i] = 0;  
-                      else magn[i] -= fallspeed;
-    if (magn[i]<readData[i]) magn[i]=readData[i];
-    summ += magn[i];
-  }
-  if (summ>16) {
-    k=0;
-    for(i=0; i<bandPass; i++) {
-      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-      cl.dw = strip.Color(cl.r, cl.g, cl.b);
-      cl=mulsBrightness(cl);
-      n=stripLed*magn[i]/summ/2;
-      for(j=0; j<n; j++) {
-        strip.setPixelColor(stripLed/2+k, cl.dw);
-        strip.setPixelColor(stripLed/2-k-1, cl.dw);
-        k++;
+  for (i=0;i<bandPass;i++) thsumm += readData[i];
+  thsumm /= bandPass;
+
+  for (i=0;i<bandPass;i++) {
+    th= (thsumm * threshold[i])>>7;
+    if (readData[i]>th) magn[i]=250;
+      else {
+       if (magn[i]>9) magn[i]-=10;
       }
+  }   
+  for (i=0;i<bandPass;i++) {
+    akk.w=magn[i]*brightness;
+    uint8_t gain=akk.b1;
+    cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
+    cl=mulsGain(cl,gain);
+    cl.dw=strip.Color(cl.r,cl.g,cl.b);
+    uint8_t n=i*LedtoColor/2;
+    for(uint8_t k=0; k<LedtoColor/2; k++) {
+      strip.setPixelColor(stripLed/2+n+k, cl.dw);
+      strip.setPixelColor(stripLed/2-(n+k)-1, cl.dw);
     }
-    if (k<stripLed/2) {
-      for(j=k; j<stripLed/2; j++) {
-        strip.setPixelColor(stripLed/2+k, clBlack);
-        strip.setPixelColor(stripLed/2-k-1, clBlack);
-        k++;
-      }
-    }
-  }
+  }   
   strip.show();
 }
 
-void zmu10() {
+void zLevel() {
   TColor cl;
   TWord akk;
   uint8_t i,k,j;
@@ -707,92 +788,81 @@ void zmu10() {
   strip.show();
 }
 
-void skazka() {
+uint32_t bandMagn2(uint8_t n) {
+//  TWord akk;
   TColor cl;
-  TWord akk;
-  uint8_t i;
-  uint16_t thsumm = 0;
-  uint8_t th;
-
-  for (i=0;i<bandPass;i++) thsumm += readData[i];
-  thsumm /= bandPass;
-
-  for (i=0;i<bandPass;i++) {
-    th= (thsumm * threshold[i])>>7;
-    if (readData[i]>th) magn[i]=250;
-      else {
-       if (magn[i]>9) magn[i]-=10;
-      }
-  }   
-  for (i=0;i<bandPass;i++) {
-    akk.w=magn[i]*brightness;
-    uint8_t gain=akk.b1;
-    cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-    cl=mulsGain(cl,gain);
-    cl.dw=strip.Color(cl.r,cl.g,cl.b);
-    uint8_t n=i*LedtoColor/2;
-    for(uint8_t k=0; k<LedtoColor/2; k++) {
-      strip.setPixelColor(stripLed/2+n+k, cl.dw);
-      strip.setPixelColor(stripLed/2-(n+k)-1, cl.dw);
-    }
-  }   
-  strip.show();
+  uint16_t gain;
+  
+  cl.dw = pgm_read_dword(&colorTab[96*n/(bandPass/2)]);
+  gain=((readData[2*n]+readData[2*n+1])*brightness)>>8;
+  cl = mulsGain(cl,gain);
+  return strip.Color(cl.r, cl.g, cl.b);
 }
 
-void zmu11() {
-  TColor cl;
-  uint8_t i,k,n;
-  int16_t gain;
+void zIBeam2() {
+  uint32_t cl;
+  uint8_t n,i,k;
 
-  for(i=0; i<bandPass; i++) {
-    diff[diffCount][i]=readData[i]-olds[i];
-    olds[i]=readData[i];
-    gain=0;
-    for(k=0; k<8; k++) gain+=diff[k][i];
-    if (gain<0) gain=-gain;
-    cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
-    cl=mulsGain(cl,gain);
-    n=i*LedtoColor;
-    for(k=0; k<LedtoColor; k++) strip.setPixelColor(n+k, cl.dw);
+  for(i=0; i<bandPass/2; i++) {
+      cl = bandMagn2(i);
+      n=i*LedtoColor;
+      for(k=0; k<LedtoColor; k++) {
+        strip.setPixelColor(n+k, cl);
+        strip.setPixelColor(stripLed-(n+k)-1, cl);
+      }
   }
   strip.show();
 }
 
-void zmu12() {
+void zMidland2() {
+  uint32_t cl;
+  uint8_t n,i,k;
+
+  for(i=0; i<bandPass/2; i++) {
+      cl = bandMagn2(i);
+      n=i*LedtoColor;
+      for(k=0; k<LedtoColor; k++) {
+        strip.setPixelColor(stripLed/2+n+k, cl);
+        strip.setPixelColor(stripLed/2-(n+k)-1, cl);
+      }
+  }
+  strip.show();
+}
+
+void zCharm() {
   TColor cl;
   uint8_t i,k,j;
-  int16_t gain,m;
+  uint16_t summ = 0;
+  uint16_t n;
 
-  fromCenterShift();
-  m=0;
   for(i=0; i<bandPass; i++) {
-    diff[diffCount][i]=readData[i]-olds[i];
-    olds[i]=readData[i];
-    gain=0;
-    for(k=0; k<8; k++) gain += diff[k][i];
-    if (gain<0) gain=-gain;
-    if (m<gain) {
-      m=gain;
-      j=i;
-    }
-  }  
-  
-  if (m<6) cl.dw = strip.Color(32, 32, 32);
-  else {
-   if (m<128) cl.dw = clBlack;
-    else {
-      cl.dw = pgm_read_dword(&colorTab[96*j/bandPass]);
-      cl=mulsBrightness(cl);
+    if (magn[i]<fallspeed) magn[i] = 0;  
+                      else magn[i] -= fallspeed;
+    if (magn[i]<readData[i]) magn[i]=readData[i];
+    summ += magn[i];
+  }
+  k=0;
+  if (summ>16) {
+    for(i=0; i<bandPass; i++) {
+      cl.dw = pgm_read_dword(&colorTab[96*i/bandPass]);
       cl.dw = strip.Color(cl.r, cl.g, cl.b);
+      cl=mulsBrightness(cl);
+      n=(stripLed*magn[i]/summ+1)/2;
+      for(j=0; j<n; j++) {
+        strip.setPixelColor(stripLed/2+k, cl.dw);
+        strip.setPixelColor(stripLed/2-k-1, cl.dw);
+        k++;
+      }
+    }
+    if (k<stripLed/2) {
+      for(j=k; j<stripLed/2; j++) {
+        strip.setPixelColor(stripLed/2+k, clBlack);
+        strip.setPixelColor(stripLed/2-k-1, clBlack);
+        k++;
+      }
     }
   }
-  strip.setPixelColor(stripLed/2, cl.dw);
-  strip.setPixelColor(stripLed/2-1, cl.dw);
-//  strip.setPixelColor(0, cl.dw);
-//  strip.setPixelColor(stripLed-1, cl.dw);
   strip.show();
-  diffCount++;
-  diffCount &= 7;
 }
 
 void stroboscope(uint8_t wait) {
@@ -952,13 +1022,13 @@ uint32_t Wheel(byte WheelPos) {
 }
 
 void setMode() {
-  if (readData[20]<240) {
+  if (readData[20]<232) {
     prog = readData[20]>>3;
     subprog = readData[20] & 7;
   }
   else {
-    prog = 30;
-    subprog = readData[20]-240;
+    prog = 29;
+    subprog = readData[20]-232;
   }
   param = readData[21];
   brightness = readData[22];
@@ -994,22 +1064,24 @@ TColor mulsGain(TColor cl, uint8_t br) {
 }
 
 void cmdMusical() {
-      if (prog==29) {
-        switch (subprog) {
-           case 0: { zmu1(); break; } // 232
-           case 1: { zmu2(); break; }
-           case 2: { zmu3(); break; }
-           case 3: { zmu4(); break; }
-           case 4: { zmu5(); break; }
-           case 5: { zmu6(); break; }
-           case 6: { zmu7(); break; }
-           case 7: { zmu8(); break; } // 239
-           case 8: { zmu9(); break; } // 240
-           case 9: { zmu10(); break; } // 241
-           case 10: { zmu11(); break; } // 242
-           case 11: { zmu12(); break; } // 243
-           case 12: { skazka(); break; } // 244
-        }
+      switch (subprog) {
+         case 0: { zRainbow(); break; }    // 232
+         case 1: { zMIX(); break; }
+         case 2: { zIBeam(); break; }
+         case 3: { zMidland(); break; }
+         case 4: { zMagicFrom(); break; }
+         case 5: { zMagicTo(); break; }
+         case 6: { zFeeryFrom(); break; }
+         case 7: { zFeeryTo(); break; }    // 239
+         case 8: { zAllureFrom(); break; } // 240
+         case 9: { zAllureTo(); break; }   // 241
+         case 10: { skazka(); break; }     // 242
+         case 11: { zLevel(); break; }     // 243
+         case 12: { zIBeam2(); break; }    // 244
+         case 13: { zMidland2(); break; }
+         case 14: { zCharm(); break; }
+         case 15: { zRainbow10(); break; } // 247
+         case 20: { ColorWhite(param); strip.show(); break; } // 252 - установка цвета ленты
       }
 }
 
@@ -1094,24 +1166,21 @@ void loop(){
 
     if (inComplete) {
       inComplete = false;
-      if (readData[20]<240) { setMode(); cmdRunning(param); }  
+      if (readData[20]<232) { setMode(); cmdRunning(param); }  
          else {
-           switch (readData[20]) {
-             case 251: { setMode();  ColorWhite(param); strip.show(); break; }
-             case 252: {  // Изменение параметров
+           if (readData[20]<255)  { setMode(); cmdMusical(); }
+           else {
+              /* Изменение параметров */
               param = readData[21];
               brightness = readData[22];
               control = readData[23];
               if (control>0) {
                 if (prog>12) prog=0;
-                 rotateStep=pgm_read_byte(&rotateInterval[prog]);
-              }
-              break; 
-             }
-             default: { setMode(); cmdMusical(); }
-           }       
+                rotateStep=pgm_read_byte(&rotateInterval[prog]);
+              }            
+           }
          }       
-      Serial.println("ОК"); // Подтверждение - команда выполнена
+      Serial.println("OK"); // Подтверждение - команда выполнена
     }
     else {
       if (prog<29) {

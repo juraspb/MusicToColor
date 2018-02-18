@@ -101,9 +101,9 @@ TForm1 = class(TForm)
     lbl10: TLabel;
     se2: TSpinEdit;
     se1: TSpinEdit;
-    btn4: TSpeedButton;
-    btn6: TSpeedButton;
-    btn7: TSpeedButton;
+    btnD1: TSpeedButton;
+    btnD2: TSpeedButton;
+    btnD3: TSpeedButton;
     lbl13: TLabel;
     lbl12: TLabel;
     ts5: TTabSheet;
@@ -124,11 +124,11 @@ TForm1 = class(TForm)
     N7: TMenuItem;
     trckbr2: TTrackBar;
     lbl18: TLabel;
-    btn5: TSpeedButton;
+    btnD4: TSpeedButton;
     chk3: TCheckBox;
     lbl7: TLabel;
-    SpeedButton1: TSpeedButton;
-    SpeedButton2: TSpeedButton;
+    btnD5: TSpeedButton;
+    btnD6: TSpeedButton;
     SpeedButton3: TSpeedButton;
     SpeedButton4: TSpeedButton;
     btn9: TSpeedButton;
@@ -137,16 +137,16 @@ TForm1 = class(TForm)
     SpeedButton7: TSpeedButton;
     SpeedButton8: TSpeedButton;
     SpeedButton9: TSpeedButton;
-    SpeedButton10: TSpeedButton;
-    SpeedButton11: TSpeedButton;
-    SpeedButton12: TSpeedButton;
-    SpeedButton13: TSpeedButton;
+    btnD7: TSpeedButton;
+    btnD8: TSpeedButton;
+    btnD9: TSpeedButton;
+    btnD10: TSpeedButton;
     btn3: TSpeedButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure cbb1Change(Sender: TObject);
-    procedure btn4Click(Sender: TObject);
+    procedure btnD1Click(Sender: TObject);
     procedure trckbr1Change(Sender: TObject);
     procedure img2MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -168,6 +168,7 @@ TForm1 = class(TForm)
      FLink: TSerialLink;
      prog:byte; // Программа, параметр
      param: array[0..252] of byte;
+     progInit: array[0..9] of byte;
      pozCount:Byte;
      initCnfg:boolean;
      mx,my,mcl:Integer;
@@ -193,6 +194,7 @@ TForm1 = class(TForm)
      RcvBuff: array[0..31] of Char;
      ledColor: array[0..9] of TColor;
      cmdString: string;
+     sl:TStringList;
      r,g,b:Byte;
      state:Integer;
      alpha:Integer;
@@ -403,7 +405,7 @@ begin
   //2^X=N (степень числа два)
   //False – прямое преобразование; True – обратное
   //Тип окна: 0-прямоугольное, 1-треугольное, 2-Хэминга, 3-Ханна, 4-Блэкмана
-  fftb.FFT(Pointer(fFFTComplBuf), BufSize, fftSq, False, 2);
+  fftb.FFT(Pointer(fFFTComplBuf), BufSize, fftSq, False, 0);
   //Переносим результат БПФ в исходный массив
   //заполняем массив выходными значениями (предварительно масштабируем их)
   for i:=0 to BufSize-1 do fftDataBuf[i] := Round(fFFTComplBuf[i].Re / gain);
@@ -427,6 +429,7 @@ begin
   if ready then stop;
   storeParams;
   SaveParams;
+  sl.Free;
   FLink.Free;
   eqBmp.Free;
   wcBmp.Free;
@@ -500,6 +503,26 @@ begin
                                          else Brightness:= 128;
      if Reg.ValueExists('cfgAutoRun') then ch:= Reg.ReadString('cfgAutoRun')
                                       else ch:= '0';
+     if Reg.ValueExists('cfgProg1') then progInit[0]:= Reg.ReadInteger('cfgProg1')
+                                    else progInit[0]:= 0;
+     if Reg.ValueExists('cfgProg2') then progInit[1]:= Reg.ReadInteger('cfgProg2')
+                                    else progInit[1]:= 1;
+     if Reg.ValueExists('cfgProg3') then progInit[2]:= Reg.ReadInteger('cfgProg3')
+                                    else progInit[2]:= 2;
+     if Reg.ValueExists('cfgProg4') then progInit[3]:= Reg.ReadInteger('cfgProg4')
+                                    else progInit[3]:= 3;
+     if Reg.ValueExists('cfgProg5') then progInit[4]:= Reg.ReadInteger('cfgProg5')
+                                    else progInit[4]:= 4;
+     if Reg.ValueExists('cfgProg6') then progInit[5]:= Reg.ReadInteger('cfgProg6')
+                                    else progInit[5]:= 5;
+     if Reg.ValueExists('cfgProg7') then progInit[6]:= Reg.ReadInteger('cfgProg7')
+                                    else progInit[6]:= 6;
+     if Reg.ValueExists('cfgProg8') then progInit[7]:= Reg.ReadInteger('cfgProg8')
+                                    else progInit[7]:= 7;
+     if Reg.ValueExists('cfgProg9') then progInit[8]:= Reg.ReadInteger('cfgProg9')
+                                    else progInit[8]:= 8;
+     if Reg.ValueExists('cfgProg10') then progInit[9]:= Reg.ReadInteger('cfgProg10')
+                                     else progInit[9]:= 9;
      if ch='1' then chk2.Checked:=True;
      Result:=true;
     end;
@@ -524,6 +547,16 @@ begin
         Reg.WriteInteger('cfgBrightness',Brightness);
         if chk2.Checked then Reg.WriteString('cfgAutoRun','1')
                         else Reg.WriteString('cfgAutoRun','0');
+        Reg.WriteInteger('cfgProg1',progInit[0]);
+        Reg.WriteInteger('cfgProg2',progInit[1]);
+        Reg.WriteInteger('cfgProg3',progInit[2]);
+        Reg.WriteInteger('cfgProg4',progInit[3]);
+        Reg.WriteInteger('cfgProg5',progInit[4]);
+        Reg.WriteInteger('cfgProg6',progInit[5]);
+        Reg.WriteInteger('cfgProg7',progInit[6]);
+        Reg.WriteInteger('cfgProg8',progInit[7]);
+        Reg.WriteInteger('cfgProg9',progInit[8]);
+        Reg.WriteInteger('cfgProg10',progInit[9]);
       end;
     finally
       Reg.CloseKey();
@@ -537,6 +570,7 @@ var i,x,y,j:Integer;
 begin
   GetDir(0,applicationsDir);
   chDir(applicationsDir);
+  sl:=TStringList.Create;
   Application.onMinimize:=OnMinimizeProc;
   eqBmp:=TBitmap.Create;
   wcBmp:=TBitmap.Create;
@@ -565,16 +599,28 @@ begin
    end;
   img2.Picture.Bitmap.Assign(wcBmp);
   ready := false;
-  prog := 242;
+  prog := 2;
   zcount:=0;
   pozCount:=0;
   rotate:=0;
   if not LoadParams then
    begin
     CommunicPortName:='COM8';
-    prog:=242;
+    prog:=2;
     gain:=1024;
     Brightness:=128;
+   end else
+   begin
+     btnD1.Caption:=inttostr(progInit[0]div 8)+inttostr(progInit[0] and 7);
+     btnD2.Caption:=inttostr(progInit[1]div 8)+inttostr(progInit[1] and 7);
+     btnD3.Caption:=inttostr(progInit[2]div 8)+inttostr(progInit[2] and 7);
+     btnD4.Caption:=inttostr(progInit[3]div 8)+inttostr(progInit[3] and 7);
+     btnD5.Caption:=inttostr(progInit[4]div 8)+inttostr(progInit[4] and 7);
+     btnD6.Caption:=inttostr(progInit[5]div 8)+inttostr(progInit[5] and 7);
+     btnD7.Caption:=inttostr(progInit[6]div 8)+inttostr(progInit[6] and 7);
+     btnD8.Caption:=inttostr(progInit[7]div 8)+inttostr(progInit[7] and 7);
+     btnD9.Caption:=inttostr(progInit[8]div 8)+inttostr(progInit[8] and 7);
+     btnD10.Caption:=inttostr(progInit[9]div 8)+inttostr(progInit[9] and 7);
    end;
   if not initParams then
    begin
@@ -708,15 +754,27 @@ begin
    rcvAnswer;          // Ответ
 end;
 
-procedure TForm1.btn4Click(Sender: TObject);
+procedure TForm1.btnD1Click(Sender: TObject);
+var State : TKeyboardState;
 begin
    if ready then stop;
    with Sender as TSpeedButton do
     begin
-      prog:=tag;
-      programRun(prog,param[prog],brightness,0); // Команда установки динамического режима
-      Sleep(200);
-      trckbr1.Position:=param[prog];
+      GetKeyboardState(State);
+      if(State[vk_Shift] and 128)<>0 then
+        begin
+          // Запоминаем программу
+          prog:=se2.Value*8+se1.Value;
+          progInit[tag]:=prog;
+          Caption:=inttostr(se2.Value)+inttostr(se1.Value);
+        end else
+        begin
+          // Устанавливаем программу
+          prog:=progInit[tag];
+        end;
+       programRun(prog,param[prog],brightness,0); // Команда установки динамического режима
+       Sleep(200);
+       trckbr1.Position:=param[prog];
     end;
 end;
 
@@ -737,6 +795,7 @@ end;
 
 procedure TForm1.rcvAnswer;
 var receive_byte,i:integer;
+    s_in:string;
 begin
   if FLink.Active then
    begin
@@ -744,17 +803,19 @@ begin
     if receive_byte>0 then
      begin
       FLink.ReceiveBuffer(RcvBuff,receive_byte);
+      s_in:='';
       for i:=0 to receive_byte-1 do
        Begin
-{       // Анализ не проводим не имеет смысла повторно передавать пакет (высокий темп ЦМ программы)
-        s_in:=s_in+inttostr(RcvBuff[i]);
-        if RcvBuff[i] in [#0, #10] then
-         begin
-          Memo1.Lines.Add(s_in);
-          s_in:='';
-         end;
-}
+       // Анализ не проводим не имеет смысла повторно передавать пакет (высокий темп ЦМ программы)
+        s_in:=s_in+inttohex(Byte(RcvBuff[i]),2)+',';
+//        s_in:=s_in+RcvBuff[i];
        end;
+       sl.Add(s_in);
+       if sl.Count>100 then
+        begin
+         sl.SaveToFile('answ.txt');
+         sl.Clear;
+        end;
      end;
    end;
 end;
@@ -769,16 +830,16 @@ begin
         lbl2.Caption:=IntToStr(param[prog]);
         if pgc1.TabIndex = 1 then
          begin
-           programRun(252,param[prog],brightness,rotate); // 252 - нет программы, а выполняется изменение уровня
+           programRun(255,param[prog],brightness,rotate); // 255 - нет программы, а выполняется изменение уровня
            Sleep(200);
-         end else gain:=64+(252-param[prog])*16;   // изменение уровня ЦМУ
+         end else gain:=64+(252-param[prog])*8;   // изменение уровня ЦМУ
       end else
       begin
         brightness:=trckbr2.Position;
         lbl18.Caption:=IntToStr(brightness);
         if pgc1.TabIndex = 1 then
          begin
-           programRun(252,param[prog],brightness,rotate);
+           programRun(255,param[prog],brightness,rotate);
            Sleep(200);
          end;
       end;
@@ -791,7 +852,7 @@ begin
   mx:=8*X div img2.Width;
   my:=8*Y div img2.Height;
   if ready then stop;
-  prog:=251;
+  prog:=252;
   if (mx mod 2)=0 then mcl:=mx*8+my
                   else mcl:=mx*8+7-my;
   param[prog]:=mcl;
@@ -802,7 +863,7 @@ procedure TForm1.N1Click(Sender: TObject);
 begin
   with Sender as TMenuItem do
    begin
-     if Tag<251 then
+     if Tag<252 then
       begin
         prog:=tag;
         trckbr1.Position:=param[prog];
@@ -810,7 +871,7 @@ begin
       end else
       begin
         prog:=tag;
-        if Tag=251 then param[prog]:=63;
+        if Tag=252 then param[prog]:=63;
         programRun(prog,param[prog],brightness,rotate);
       end;
    end;
@@ -826,7 +887,7 @@ procedure TForm1.btn12Click(Sender: TObject);
 begin
   if ready then stop;
   Sleep(200);
-  prog:=251;
+  prog:=252;
   param[prog]:=63;
   programRun(prog,param[prog],brightness,rotate);
 end;
@@ -896,7 +957,7 @@ procedure TForm1.chk3Click(Sender: TObject);
 begin
    if chk3.Checked then rotate:=255                // Включить перебор динамических программ
                    else rotate:=0;                 // Отключить перебор динамических программ
-   programRun(252,param[prog],brightness,rotate);  // Команда изменения параметров
+   programRun(255,param[prog],brightness,rotate);  // Команда изменения параметров
    Sleep(200);
 end;
 
