@@ -756,7 +756,7 @@ object Form1: TForm1
           Left = 62
           Top = 32
           Width = 41
-          Height = 30
+          Height = 31
           Hint = #1042#1099#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -837,7 +837,7 @@ object Form1: TForm1
         Font.Height = -13
         Font.Name = 'MS Sans Serif'
         Font.Style = []
-        ItemHeight = 16
+        ItemHeight = 0
         ParentFont = False
         TabOrder = 0
         Text = 'audio devices'

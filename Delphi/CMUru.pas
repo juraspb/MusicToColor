@@ -40,9 +40,7 @@ const
       $00FFFF,$00EEFF,$00DDFF,$00CCFF,$00BBFF,$00AAFF,$0099FF,$0088FF,$0077FF,$0066FF,$0055FF,$0044FF,$0033FF,$0022FF,$0011FF,$0000FF,  //голубой Ч синий
       $0000FF,$1100FF,$2200FF,$3300FF,$4400FF,$5500FF,$6600FF,$7700FF,$8800FF,$9900FF,$AA00FF,$BB00FF,$CC00FF,$DD00FF,$EE00FF,$FF00FF,  //синий Ч пурпур (маджента)
       $FF00FF,$FF00EE,$FF00DD,$FF00CC,$FF00BB,$FF00AA,$FF0099,$FF0088,$FF0077,$FF0066,$FF0055,$FF0044,$FF0033,$FF0022,$FF0011,$FF0000); //маджента Ч красный
-
-const
-// массив содержит сопоставлени€ режима работы и словесного описани€
+   Garmoniks : array [0..19] of Integer =(2,3,4,5,7,9,11,13,15,17,19,22,25,28,32,36,44,54,66,80);
    modes: array [1..12] of TModeDescr=((Channels: 1; Rate: 11025; Bits: 8; mode: WAVE_FORMAT_1M08; descr:'11.025 kHz, mono, 8-bit'),
                                        (Channels: 1; Rate: 11025; Bits: 16; mode: WAVE_FORMAT_1M16; descr:'11.025 kHz, mono, 16-bit'),
                                        (Channels: 2; Rate: 11025; Bits: 8; mode: WAVE_FORMAT_1S08; descr:'11.025 kHz, stereo, 8-bit'),
@@ -55,7 +53,6 @@ const
                                        (Channels: 1; Rate: 44100; Bits: 16; mode: WAVE_FORMAT_4M16; descr:'44.1 kHz, mono, 16-bit'),
                                        (Channels: 2; Rate: 44100; Bits: 8; mode: WAVE_FORMAT_4S08; descr:'44.1 kHz, stereo, 8-bit'),
                                        (Channels: 2; Rate: 44100; Bits: 16; mode: WAVE_FORMAT_4S16; descr:'44.1 kHz, stereo, 16-bit'));
-
 type
     TData16 = array [0..BufSize * chan - 1] of smallint;
     PData16 = ^TData16;
@@ -291,44 +288,20 @@ var i,j,k,zmax,nGarmoniks: integer;
 begin
   Inc(ffCount);
   if ffCount>ffLen-1 then ffCount:=0;
-  // не равномерно по октавам
   i:=1;
   zmax:=0;
   for j:=0 to nBandPass-1 do
    begin
-    case j of
-     0:  nGarmoniks:=2;
-     1:  nGarmoniks:=3;
-     2:  nGarmoniks:=4;
-     3:  nGarmoniks:=5;
-     4:  nGarmoniks:=7;
-     5:  nGarmoniks:=9;
-     6:  nGarmoniks:=11;
-     7:  nGarmoniks:=13;
-     8:  nGarmoniks:=15;
-     9:  nGarmoniks:=17;
-     10: nGarmoniks:=19;
-     11: nGarmoniks:=22;
-     12: nGarmoniks:=25;
-     13: nGarmoniks:=28;
-     14: nGarmoniks:=32;
-     15: nGarmoniks:=36;
-     16: nGarmoniks:=44;
-     17: nGarmoniks:=54;
-     18: nGarmoniks:=66;
-     19: nGarmoniks:=80;
-     else nGarmoniks:=0;
-     end;
+    nGarmoniks:=Garmoniks[j];
     clMagnBuf[j]:=0;
     for k:=0 to nGarmoniks-1 do
      begin
        clMagnBuf[j]:=clMagnBuf[j]+fftDataBuf[i]+fftDataBuf[BufSize-i];
        inc(i);
      end;
-    bpFilter[ffCount,j]:=clMagnBuf[j]div 3; // nGarmoniks;
+    bpFilter[ffCount,j]:=clMagnBuf[j]div 3;
     zcl[j]:=0;
-    for k:=0 to ffLen-1 do zcl[j]:=zcl[j]+bpFilter[k,j]; // 512 гармоник
-    // масштабируем
+    for k:=0 to ffLen-1 do zcl[j]:=zcl[j]+bpFilter[k,j];
     zcl[j]:=zcl[j] div ffLen;
     if zcl[j]>255 then zcl[j]:=255;
     if zcl[j]>zmax then zmax:=zcl[j];
@@ -361,7 +334,6 @@ begin
      zcount:=10;
      for j:=0 to nBandPass-1 do zmuBuf[j]:=zcl[j];
    end;
-//  for j:=nBandPass to 30 do zmuBuf[j]:=0;
   if FLink.Active then setBandPass;
 end;
 

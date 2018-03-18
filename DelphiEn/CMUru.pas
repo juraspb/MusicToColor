@@ -41,8 +41,8 @@ const
       $0000FF,$1100FF,$2200FF,$3300FF,$4400FF,$5500FF,$6600FF,$7700FF,$8800FF,$9900FF,$AA00FF,$BB00FF,$CC00FF,$DD00FF,$EE00FF,$FF00FF,  //синий Ч пурпур (маджента)
       $FF00FF,$FF00EE,$FF00DD,$FF00CC,$FF00BB,$FF00AA,$FF0099,$FF0088,$FF0077,$FF0066,$FF0055,$FF0044,$FF0033,$FF0022,$FF0011,$FF0000); //маджента Ч красный
 
-const
-// массив содержит сопоставлени€ режима работы и словесного описани€
+   Garmoniks : array [0..19] of Integer =(2,3,4,5,7,9,11,13,15,17,19,22,25,28,32,36,44,54,66,80);
+
    modes: array [1..12] of TModeDescr=((Channels: 1; Rate: 11025; Bits: 8; mode: WAVE_FORMAT_1M08; descr:'11.025 kHz, mono, 8-bit'),
                                        (Channels: 1; Rate: 11025; Bits: 16; mode: WAVE_FORMAT_1M16; descr:'11.025 kHz, mono, 16-bit'),
                                        (Channels: 2; Rate: 11025; Bits: 8; mode: WAVE_FORMAT_1S08; descr:'11.025 kHz, stereo, 8-bit'),
@@ -101,9 +101,9 @@ TForm1 = class(TForm)
     lbl10: TLabel;
     se2: TSpinEdit;
     se1: TSpinEdit;
-    btn4: TSpeedButton;
-    btn6: TSpeedButton;
-    btn7: TSpeedButton;
+    btnD1: TSpeedButton;
+    btnD2: TSpeedButton;
+    btnD3: TSpeedButton;
     lbl13: TLabel;
     lbl12: TLabel;
     ts5: TTabSheet;
@@ -123,11 +123,11 @@ TForm1 = class(TForm)
     N7: TMenuItem;
     trckbr2: TTrackBar;
     lbl18: TLabel;
-    btn5: TSpeedButton;
+    btnD4: TSpeedButton;
     chk3: TCheckBox;
     lbl7: TLabel;
-    SpeedButton1: TSpeedButton;
-    SpeedButton2: TSpeedButton;
+    btnD5: TSpeedButton;
+    btnD6: TSpeedButton;
     SpeedButton3: TSpeedButton;
     SpeedButton4: TSpeedButton;
     btn9: TSpeedButton;
@@ -136,16 +136,16 @@ TForm1 = class(TForm)
     SpeedButton7: TSpeedButton;
     SpeedButton8: TSpeedButton;
     SpeedButton9: TSpeedButton;
-    SpeedButton10: TSpeedButton;
-    SpeedButton11: TSpeedButton;
-    SpeedButton12: TSpeedButton;
-    SpeedButton13: TSpeedButton;
+    btnD7: TSpeedButton;
+    btnD8: TSpeedButton;
+    btnD9: TSpeedButton;
+    btnD10: TSpeedButton;
     btn3: TSpeedButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure cbb1Change(Sender: TObject);
-    procedure btn4Click(Sender: TObject);
+    procedure btnD1Click(Sender: TObject);
     procedure trckbr1Change(Sender: TObject);
     procedure img2MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -165,8 +165,9 @@ TForm1 = class(TForm)
     { Private declarations }
      applicationsDir: string;
      FLink: TSerialLink;
-     prog:byte; // ѕрограмма, параметр
+     prog:byte;
      param: array[0..252] of byte;
+     progInit: array[0..9] of byte;
      pozCount:Byte;
      initCnfg:boolean;
      mx,my,mcl:Integer;
@@ -192,6 +193,7 @@ TForm1 = class(TForm)
      RcvBuff: array[0..31] of Char;
      ledColor: array[0..9] of TColor;
      cmdString: string;
+     sl:TStringList;
      r,g,b:Byte;
      state:Integer;
      alpha:Integer;
@@ -293,39 +295,16 @@ begin
   zmax:=0;
   for j:=0 to nBandPass-1 do
    begin
-    case j of
-     0:  nGarmoniks:=2;
-     1:  nGarmoniks:=3;
-     2:  nGarmoniks:=4;
-     3:  nGarmoniks:=5;
-     4:  nGarmoniks:=7;
-     5:  nGarmoniks:=9;
-     6:  nGarmoniks:=11;
-     7:  nGarmoniks:=13;
-     8:  nGarmoniks:=15;
-     9:  nGarmoniks:=17;
-     10: nGarmoniks:=19;
-     11: nGarmoniks:=22;
-     12: nGarmoniks:=25;
-     13: nGarmoniks:=28;
-     14: nGarmoniks:=32;
-     15: nGarmoniks:=36;
-     16: nGarmoniks:=44;
-     17: nGarmoniks:=54;
-     18: nGarmoniks:=66;
-     19: nGarmoniks:=80;
-     else nGarmoniks:=0;
-     end;
+    nGarmoniks:=Garmoniks[j];
     clMagnBuf[j]:=0;
     for k:=0 to nGarmoniks-1 do
      begin
        clMagnBuf[j]:=clMagnBuf[j]+fftDataBuf[i]+fftDataBuf[BufSize-i];
        inc(i);
      end;
-    bpFilter[ffCount,j]:=clMagnBuf[j]div 3; // nGarmoniks;
+    bpFilter[ffCount,j]:=clMagnBuf[j]div 3;
     zcl[j]:=0;
-    for k:=0 to ffLen-1 do zcl[j]:=zcl[j]+bpFilter[k,j]; // 512
-    // масштабируем
+    for k:=0 to ffLen-1 do zcl[j]:=zcl[j]+bpFilter[k,j];
     zcl[j]:=zcl[j] div ffLen;
     if zcl[j]>255 then zcl[j]:=255;
     if zcl[j]>zmax then zmax:=zcl[j];
@@ -358,23 +337,22 @@ begin
      zcount:=10;
      for j:=0 to nBandPass-1 do zmuBuf[j]:=zcl[j];
    end;
-//  for j:=nBandPass to 30 do zmuBuf[j]:=0;
   if FLink.Active then setBandPass;
 end;
 
 procedure TForm1.ShowInfo;
 var
    WaveNums, i, j: integer;
-   WaveInCaps: TWaveInCaps;   //
+   WaveInCaps: TWaveInCaps;
 begin
   j:=0;
   WaveNums:=waveInGetNumDevs;
-  if WaveNums>0 then          //
+  if WaveNums>0 then
    begin
-    for i:=0 to WaveNums-1 do //
+    for i:=0 to WaveNums-1 do
      begin
       waveInGetDevCaps(i,@WaveInCaps,sizeof(TWaveInCaps));
-      cbb1.Items.Add(PChar(@WaveInCaps.szPname));   //
+      cbb1.Items.Add(PChar(@WaveInCaps.szPname));
       if audioDevicesName=cbb1.Items[i] then j:=i;
      end;
     cbb1.ItemIndex:=j;
@@ -384,27 +362,27 @@ end;
 
 procedure TForm1.MakeFFT;
 var
-  fftb: TFFTBase; // FFT
-  fFFTComplBuf: ^TComplexArray;  //
+  fftb: TFFTBase; //FFT
+  fFFTComplBuf: ^TComplexArray;
   i: integer;
 begin
-  GetMem(fFFTComplBuf, BufSize*SizeOf(TComplex)); //
-  for i:=0 to BufSize-1 do //
+  GetMem(fFFTComplBuf, BufSize*SizeOf(TComplex));
+  for i:=0 to BufSize-1 do
     begin
       fFFTComplBuf[i].Re := (inDataBuf[i*chan]+inDataBuf[i*chan+1])div 2;
       fFFTComplBuf[i].Im := 0;
     end;
   fftb:=TFFTBase.Create(nil);
   //FFT
-  //ѕараметры:
+  //Set:
   //N
   //2^X=N
   //False Ц FFT; True Ц iFFT
   //Window: 0, 1, 2, 3, 4
-  fftb.FFT(Pointer(fFFTComplBuf), BufSize, fftSq, False, 2);
+  fftb.FFT(Pointer(fFFTComplBuf), BufSize, fftSq, False, 0);
   for i:=0 to BufSize-1 do fftDataBuf[i] := Round(fFFTComplBuf[i].Re / gain);
   fftb.Free;
-  FreeMem(fFFTComplBuf, BufSize*SizeOf(TComplex));
+  FreeMem(fFFTComplBuf, BufSize*SizeOf(TComplex)); //ќсвобождение пам€ти выделенной под массив
 end;
 
 procedure TForm1.OnWaveIn;
@@ -423,6 +401,7 @@ begin
   if ready then stop;
   storeParams;
   SaveParams;
+  sl.Free;
   FLink.Free;
   eqBmp.Free;
   wcBmp.Free;
@@ -493,6 +472,26 @@ begin
                                          else Brightness:= 128;
      if Reg.ValueExists('cfgAutoRun') then ch:= Reg.ReadString('cfgAutoRun')
                                       else ch:= '0';
+     if Reg.ValueExists('cfgProg1') then progInit[0]:= Reg.ReadInteger('cfgProg1')
+                                    else progInit[0]:= 0;
+     if Reg.ValueExists('cfgProg2') then progInit[1]:= Reg.ReadInteger('cfgProg2')
+                                    else progInit[1]:= 1;
+     if Reg.ValueExists('cfgProg3') then progInit[2]:= Reg.ReadInteger('cfgProg3')
+                                    else progInit[2]:= 2;
+     if Reg.ValueExists('cfgProg4') then progInit[3]:= Reg.ReadInteger('cfgProg4')
+                                    else progInit[3]:= 3;
+     if Reg.ValueExists('cfgProg5') then progInit[4]:= Reg.ReadInteger('cfgProg5')
+                                    else progInit[4]:= 4;
+     if Reg.ValueExists('cfgProg6') then progInit[5]:= Reg.ReadInteger('cfgProg6')
+                                    else progInit[5]:= 5;
+     if Reg.ValueExists('cfgProg7') then progInit[6]:= Reg.ReadInteger('cfgProg7')
+                                    else progInit[6]:= 6;
+     if Reg.ValueExists('cfgProg8') then progInit[7]:= Reg.ReadInteger('cfgProg8')
+                                    else progInit[7]:= 7;
+     if Reg.ValueExists('cfgProg9') then progInit[8]:= Reg.ReadInteger('cfgProg9')
+                                    else progInit[8]:= 8;
+     if Reg.ValueExists('cfgProg10') then progInit[9]:= Reg.ReadInteger('cfgProg10')
+                                     else progInit[9]:= 9;
      if ch='1' then chk2.Checked:=True;
      Result:=true;
     end;
@@ -517,6 +516,16 @@ begin
         Reg.WriteInteger('cfgBrightness',Brightness);
         if chk2.Checked then Reg.WriteString('cfgAutoRun','1')
                         else Reg.WriteString('cfgAutoRun','0');
+        Reg.WriteInteger('cfgProg1',progInit[0]);
+        Reg.WriteInteger('cfgProg2',progInit[1]);
+        Reg.WriteInteger('cfgProg3',progInit[2]);
+        Reg.WriteInteger('cfgProg4',progInit[3]);
+        Reg.WriteInteger('cfgProg5',progInit[4]);
+        Reg.WriteInteger('cfgProg6',progInit[5]);
+        Reg.WriteInteger('cfgProg7',progInit[6]);
+        Reg.WriteInteger('cfgProg8',progInit[7]);
+        Reg.WriteInteger('cfgProg9',progInit[8]);
+        Reg.WriteInteger('cfgProg10',progInit[9]);
       end;
     finally
       Reg.CloseKey();
@@ -530,6 +539,7 @@ var i,x,y,j:Integer;
 begin
   GetDir(0,applicationsDir);
   chDir(applicationsDir);
+  sl:=TStringList.Create;
   Application.onMinimize:=OnMinimizeProc;
   eqBmp:=TBitmap.Create;
   wcBmp:=TBitmap.Create;
@@ -558,16 +568,28 @@ begin
    end;
   img2.Picture.Bitmap.Assign(wcBmp);
   ready := false;
-  prog := 242;
+  prog := 2;
   zcount:=0;
   pozCount:=0;
   rotate:=0;
   if not LoadParams then
    begin
     CommunicPortName:='COM8';
-    prog:=0;
+    prog:=2;
     gain:=1024;
     Brightness:=128;
+   end else
+   begin
+     btnD1.Caption:=inttostr(progInit[0]div 8)+inttostr(progInit[0] and 7);
+     btnD2.Caption:=inttostr(progInit[1]div 8)+inttostr(progInit[1] and 7);
+     btnD3.Caption:=inttostr(progInit[2]div 8)+inttostr(progInit[2] and 7);
+     btnD4.Caption:=inttostr(progInit[3]div 8)+inttostr(progInit[3] and 7);
+     btnD5.Caption:=inttostr(progInit[4]div 8)+inttostr(progInit[4] and 7);
+     btnD6.Caption:=inttostr(progInit[5]div 8)+inttostr(progInit[5] and 7);
+     btnD7.Caption:=inttostr(progInit[6]div 8)+inttostr(progInit[6] and 7);
+     btnD8.Caption:=inttostr(progInit[7]div 8)+inttostr(progInit[7] and 7);
+     btnD9.Caption:=inttostr(progInit[8]div 8)+inttostr(progInit[8] and 7);
+     btnD10.Caption:=inttostr(progInit[9]div 8)+inttostr(progInit[9] and 7);
    end;
   if not initParams then
    begin
@@ -608,12 +630,12 @@ begin
     if not FLink.Active then
      begin
       Lbl1.Font.Color:=clRed;
-      Lbl1.Caption:='Close';
-      MessageDlg('Disconnected', mtError, [mbOK], 0);
+      Lbl1.Caption:='Closed';
+      MessageDlg('No connection', mtError, [mbOK], 0);
      end else
      begin
       Lbl1.Font.Color:=clGreen;
-      Lbl1.Caption:='Open';
+      Lbl1.Caption:='Opened';
      end;
   end;
 end;
@@ -648,6 +670,7 @@ begin
       cbSize := 0;
     end;
   audioDevices:=cbb1.ItemIndex;
+//  WaveInOpen(Addr(WaveIn), WAVE_MAPPER, addr(header), Form1.Handle, 0, CALLBACK_WINDOW);  // ѕодключение к устройству ввода выбранному системой WAVE_MAPPER
   WaveInOpen(Addr(WaveIn), audioDevices, addr(header), Form1.Handle, 0, CALLBACK_WINDOW);
   BufLen := header.nBlockAlign * BufSize;
   hBuf := GlobalAlloc(GMEM_MOVEABLE and GMEM_SHARE, BufLen);
@@ -684,30 +707,40 @@ end;
 procedure TForm1.setBandPass;
 var i:Integer;
 begin
-   SendBuff[0]:=253;            // Start command
+   SendBuff[0]:=253;           // Start command
    for i:=0 to nBandPass-1 do
     begin
      if zmuBuf[i]>252 then zmuBuf[i]:=255;
-     SendBuff[i+1]:=zmuBuf[i];  // BandPass magnitude
+     SendBuff[i+1]:=zmuBuf[i]; // BandPass magnitude
     end;
-   SendBuff[21]:=prog;          // Programm number
-   SendBuff[22]:=param[prog];   // Gain
-   SendBuff[23]:=brightness;    // Brightness
-   SendBuff[24]:=0;             // Control
-   SendBuff[25]:=254;           // End command
+   SendBuff[21]:=prog;         // Programm number
+   SendBuff[22]:=param[prog];  // Gain
+   SendBuff[23]:=brightness;   // Brightness
+   SendBuff[24]:=0;            // Control
+   SendBuff[25]:=254;          // End command
    FLink.SendBuffer(SendBuff);
-   rcvAnswer;                   // Answer
+   rcvAnswer;                  // Answer
 end;
 
-procedure TForm1.btn4Click(Sender: TObject);
+procedure TForm1.btnD1Click(Sender: TObject);
+var State : TKeyboardState;
 begin
    if ready then stop;
    with Sender as TSpeedButton do
     begin
-      prog:=tag;
-      programRun(prog,param[prog],brightness,0);
-      Sleep(200);
-      trckbr1.Position:=param[prog];
+      GetKeyboardState(State);
+      if(State[vk_Shift] and 128)<>0 then
+        begin
+          prog:=se2.Value*8+se1.Value;
+          progInit[tag]:=prog;
+          Caption:=inttostr(se2.Value)+inttostr(se1.Value);
+        end else
+        begin
+          prog:=progInit[tag];
+        end;
+       programRun(prog,param[prog],brightness,0);
+       Sleep(200);
+       trckbr1.Position:=param[prog];
     end;
 end;
 
@@ -727,6 +760,7 @@ end;
 
 procedure TForm1.rcvAnswer;
 var receive_byte,i:integer;
+    s_in:string;
 begin
   if FLink.Active then
    begin
@@ -734,16 +768,18 @@ begin
     if receive_byte>0 then
      begin
       FLink.ReceiveBuffer(RcvBuff,receive_byte);
+      s_in:='';
       for i:=0 to receive_byte-1 do
        Begin
-{       s_in:=s_in+inttostr(RcvBuff[i]);
-        if RcvBuff[i] in [#0, #10] then
-         begin
-          Memo1.Lines.Add(s_in);
-          s_in:='';
-         end;
-}
+        s_in:=s_in+inttohex(Byte(RcvBuff[i]),2)+',';
+//        s_in:=s_in+RcvBuff[i];
        end;
+       sl.Add(s_in);
+       if sl.Count>100 then
+        begin
+         sl.SaveToFile('answ.txt');
+         sl.Clear;
+        end;
      end;
    end;
 end;
@@ -758,16 +794,16 @@ begin
         lbl2.Caption:=IntToStr(param[prog]);
         if pgc1.TabIndex = 1 then
          begin
-           programRun(252,param[prog],brightness,rotate);
+           programRun(255,param[prog],brightness,rotate); // 255 - change the gain, brightness, mode
            Sleep(200);
-         end else gain:=64+(252-param[prog])*16;
+         end else gain:=64+(252-param[prog])*8;   // change the gain
       end else
       begin
         brightness:=trckbr2.Position;
         lbl18.Caption:=IntToStr(brightness);
         if pgc1.TabIndex = 1 then
          begin
-           programRun(252,param[prog],brightness,rotate);
+           programRun(255,param[prog],brightness,rotate);
            Sleep(200);
          end;
       end;
@@ -780,18 +816,18 @@ begin
   mx:=8*X div img2.Width;
   my:=8*Y div img2.Height;
   if ready then stop;
-  prog:=251;
+  prog:=252;
   if (mx mod 2)=0 then mcl:=mx*8+my
                   else mcl:=mx*8+7-my;
   param[prog]:=mcl;
-  programRun(prog,param[prog],brightness,rotate);
+  programRun(prog,param[prog],brightness,rotate);   // Set strip led color
 end;
 
 procedure TForm1.N1Click(Sender: TObject);
 begin
   with Sender as TMenuItem do
    begin
-     if Tag<251 then
+     if Tag<252 then
       begin
         prog:=tag;
         trckbr1.Position:=param[prog];
@@ -799,7 +835,7 @@ begin
       end else
       begin
         prog:=tag;
-        if Tag=251 then param[prog]:=63;
+        if Tag=252 then param[prog]:=63;
         programRun(prog,param[prog],brightness,rotate);
       end;
    end;
@@ -815,14 +851,14 @@ procedure TForm1.btn12Click(Sender: TObject);
 begin
   if ready then stop;
   Sleep(200);
-  prog:=251;
+  prog:=252;
   param[prog]:=63;
   programRun(prog,param[prog],brightness,rotate);
 end;
 
 procedure TForm1.btn19Click(Sender: TObject);
 begin
-  ShellExecute(Application.Handle,'open','https://github.com/juraspb/MusicToColor.git',nil,nil,0);
+  ShellExecute(Application.Handle,'open','https://1drv.ms/u/s!AnhvZp98C-GCo2SBgxaOUuz-ycCR',nil,nil,0);
 end;
 
 procedure TForm1.lbl8Click(Sender: TObject);
@@ -883,9 +919,9 @@ end;
 
 procedure TForm1.chk3Click(Sender: TObject);
 begin
-   if chk3.Checked then rotate:=255
-                   else rotate:=0;
-   programRun(252,param[prog],brightness,rotate);
+   if chk3.Checked then rotate:=255                // random choise on
+                   else rotate:=0;                 // random choise off
+   programRun(255,param[prog],brightness,rotate);  // send command
    Sleep(200);
 end;
 

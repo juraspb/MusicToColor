@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 471
-  Top = 212
+  Left = 349
+  Top = 213
   HorzScrollBar.Visible = False
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -228,7 +228,7 @@ object Form1: TForm1
     Top = 0
     Width = 375
     Height = 244
-    ActivePage = ts2
+    ActivePage = ts1
     Align = alTop
     TabOrder = 0
     object ts1: TTabSheet
@@ -294,7 +294,7 @@ object Form1: TForm1
           Top = 30
           Width = 66
           Height = 25
-          Hint = #1042#1099#1073#1086#1088' '#1084#1091#1079#1099#1082#1072#1083#1100#1085#1086#1081' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          Hint = 'Choise programm'
           GroupIndex = 2
           Caption = 'I-BEAM'
           Font.Charset = DEFAULT_CHARSET
@@ -334,7 +334,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 1'
+          Caption = 'Charm1'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -353,7 +353,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = 'Dream 1'
+          Caption = 'Charm'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -372,7 +372,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 2'
+          Caption = 'Charm2'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -391,7 +391,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 3'
+          Caption = 'Fantasy1'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -410,7 +410,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 4'
+          Caption = 'Fantasy2'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -429,7 +429,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 5'
+          Caption = 'Allure1'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -448,7 +448,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 6'
+          Caption = 'Allure2'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -467,7 +467,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 7'
+          Caption = 'Tale'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -486,7 +486,7 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 8'
+          Caption = 'LEVEL'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -505,10 +505,10 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 9'
+          Caption = 'I-BEAM10'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -13
+          Font.Height = -12
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
@@ -524,10 +524,10 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = #1057'harm 10'
+          Caption = 'Midland10'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -13
+          Font.Height = -12
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
@@ -543,10 +543,10 @@ object Form1: TForm1
           Height = 25
           Hint = 'Choise programm'
           GroupIndex = 2
-          Caption = 'Dream 2'
+          Caption = 'Rainbow10'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -13
+          Font.Height = -12
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
@@ -564,7 +564,7 @@ object Form1: TForm1
         Top = 0
         Width = 222
         Height = 216
-        Hint = 'Choise color'
+        Hint = 'Strip LED Color'
         Align = alClient
         ParentShowHint = False
         ShowHint = True
@@ -597,7 +597,7 @@ object Form1: TForm1
           Font.Style = [fsBold]
           ParentFont = False
         end
-        object btn4: TSpeedButton
+        object btnD1: TSpeedButton
           Left = 8
           Top = 70
           Width = 64
@@ -613,9 +613,9 @@ object Form1: TForm1
           ParentFont = False
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object btn6: TSpeedButton
+        object btnD2: TSpeedButton
           Tag = 1
           Left = 74
           Top = 70
@@ -626,9 +626,9 @@ object Form1: TForm1
           Caption = '2'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object btn7: TSpeedButton
+        object btnD3: TSpeedButton
           Tag = 2
           Left = 8
           Top = 96
@@ -639,9 +639,9 @@ object Form1: TForm1
           Caption = '3'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object btn5: TSpeedButton
+        object btnD4: TSpeedButton
           Tag = 3
           Left = 74
           Top = 96
@@ -652,9 +652,9 @@ object Form1: TForm1
           Caption = '4'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton1: TSpeedButton
+        object btnD5: TSpeedButton
           Tag = 4
           Left = 8
           Top = 122
@@ -665,9 +665,9 @@ object Form1: TForm1
           Caption = '5'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton2: TSpeedButton
+        object btnD6: TSpeedButton
           Tag = 5
           Left = 73
           Top = 122
@@ -678,9 +678,9 @@ object Form1: TForm1
           Caption = '6'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton10: TSpeedButton
+        object btnD7: TSpeedButton
           Tag = 6
           Left = 8
           Top = 148
@@ -691,9 +691,9 @@ object Form1: TForm1
           Caption = '7'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton11: TSpeedButton
+        object btnD8: TSpeedButton
           Tag = 7
           Left = 73
           Top = 148
@@ -704,9 +704,9 @@ object Form1: TForm1
           Caption = '8'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton12: TSpeedButton
+        object btnD9: TSpeedButton
           Tag = 8
           Left = 8
           Top = 174
@@ -717,9 +717,9 @@ object Form1: TForm1
           Caption = '9'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
-        object SpeedButton13: TSpeedButton
+        object btnD10: TSpeedButton
           Tag = 9
           Left = 73
           Top = 174
@@ -730,13 +730,13 @@ object Form1: TForm1
           Caption = '10'
           ParentShowHint = False
           ShowHint = True
-          OnClick = btn4Click
+          OnClick = btnD1Click
         end
         object se2: TSpinEdit
           Left = 20
           Top = 32
           Width = 41
-          Height = 31
+          Height = 30
           Hint = 'Choise programm'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -817,9 +817,9 @@ object Form1: TForm1
       object lbl1: TLabel
         Left = 120
         Top = 80
-        Width = 46
+        Width = 56
         Height = 20
-        Caption = 'Close'
+        Caption = 'Closed'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -837,7 +837,7 @@ object Form1: TForm1
         Font.Height = -13
         Font.Name = 'MS Sans Serif'
         Font.Style = []
-        ItemHeight = 16
+        ItemHeight = 0
         ParentFont = False
         TabOrder = 0
         Text = 'audio devices'
@@ -846,7 +846,7 @@ object Form1: TForm1
       object chk2: TCheckBox
         Left = 16
         Top = 128
-        Width = 81
+        Width = 185
         Height = 17
         Caption = 'Autorun'
         TabOrder = 1
@@ -855,7 +855,7 @@ object Form1: TForm1
       object chk1: TCheckBox
         Left = 16
         Top = 148
-        Width = 113
+        Width = 105
         Height = 17
         Caption = 'Minimize to tray'
         TabOrder = 2
@@ -908,11 +908,11 @@ object Form1: TForm1
       Caption = 'About'
       ImageIndex = 2
       object lbl5: TLabel
-        Left = 112
-        Top = 32
+        Left = 120
+        Top = 40
         Width = 134
         Height = 16
-        Caption = 'Version 5.9  12.02.2018'
+        Caption = 'Version 6.1  18.03.2018'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -921,7 +921,7 @@ object Form1: TForm1
         ParentFont = False
       end
       object lbl6: TLabel
-        Left = 120
+        Left = 128
         Top = 8
         Width = 109
         Height = 20
@@ -934,7 +934,7 @@ object Form1: TForm1
         ParentFont = False
       end
       object lbl8: TLabel
-        Left = 152
+        Left = 160
         Top = 158
         Width = 49
         Height = 16
@@ -948,7 +948,7 @@ object Form1: TForm1
         OnClick = lbl8Click
       end
       object lbl9: TLabel
-        Left = 62
+        Left = 70
         Top = 160
         Width = 81
         Height = 14
@@ -961,7 +961,7 @@ object Form1: TForm1
         ParentFont = False
       end
       object lbl13: TLabel
-        Left = 217
+        Left = 209
         Top = 184
         Width = 25
         Height = 14
@@ -975,7 +975,7 @@ object Form1: TForm1
       end
       object lbl12: TLabel
         Tag = 1
-        Left = 248
+        Left = 240
         Top = 182
         Width = 84
         Height = 16
@@ -989,7 +989,7 @@ object Form1: TForm1
         OnClick = lbl8Click
       end
       object lbl14: TLabel
-        Left = 78
+        Left = 86
         Top = 128
         Width = 92
         Height = 14
@@ -1003,7 +1003,7 @@ object Form1: TForm1
       end
       object lbl15: TLabel
         Tag = 4
-        Left = 176
+        Left = 184
         Top = 126
         Width = 94
         Height = 16
@@ -1017,7 +1017,7 @@ object Form1: TForm1
         OnClick = lbl8Click
       end
       object lbl16: TLabel
-        Left = 48
+        Left = 40
         Top = 184
         Width = 58
         Height = 14
@@ -1031,7 +1031,7 @@ object Form1: TForm1
       end
       object lbl17: TLabel
         Tag = 2
-        Left = 112
+        Left = 104
         Top = 182
         Width = 93
         Height = 16
@@ -1046,7 +1046,7 @@ object Form1: TForm1
       end
       object lbl19: TLabel
         Tag = 3
-        Left = 216
+        Left = 224
         Top = 158
         Width = 82
         Height = 16
@@ -1060,7 +1060,7 @@ object Form1: TForm1
         OnClick = lbl8Click
       end
       object lbl7: TLabel
-        Left = 204
+        Left = 212
         Top = 158
         Width = 4
         Height = 16
@@ -1073,11 +1073,11 @@ object Form1: TForm1
         ParentFont = False
       end
       object btn19: TButton
-        Left = 88
-        Top = 64
+        Left = 96
+        Top = 88
         Width = 177
         Height = 25
-        Hint = #1047#1072#1075#1088#1091#1079#1080#1090#1100' '#1087#1086#1089#1083#1077#1076#1085#1102#1102' '#1074#1077#1088#1089#1080#1102
+        Hint = 'Load last version'
         Caption = 'Load last version'
         TabOrder = 0
         OnClick = btn19Click
@@ -1091,7 +1091,7 @@ object Form1: TForm1
         Top = 0
         Width = 367
         Height = 216
-        Hint = 'Simple connection scheme'
+        Hint = #1055#1088#1086#1089#1090#1072#1103' '#1089#1093#1077#1084#1072' '#1074#1082#1083#1102#1095#1077#1085#1080#1103
         Align = alClient
         ParentShowHint = False
         Picture.Data = {
@@ -1625,7 +1625,7 @@ object Form1: TForm1
       Top = 12
       Width = 245
       Height = 29
-      Hint = 'Speed or Gain'
+      Hint = 'Gain or speed'
       Max = 252
       ParentShowHint = False
       Frequency = 16
@@ -1653,45 +1653,45 @@ object Form1: TForm1
     end
   end
   object pm1: TPopupMenu
-    Left = 300
-    Top = 24
+    Left = 308
+    Top = 32
     object N1: TMenuItem
-      Tag = 240
+      Tag = 232
       Caption = 'Rainbow'
       OnClick = N1Click
     end
     object N2: TMenuItem
-      Tag = 241
+      Tag = 233
       Caption = 'MIX'
       OnClick = N1Click
     end
     object N3: TMenuItem
-      Tag = 242
-      Caption = 'I-Beam'
+      Tag = 234
+      Caption = 'I-BEAM'
       OnClick = N1Click
     end
     object N4: TMenuItem
-      Tag = 243
+      Tag = 235
       Caption = 'Midland'
       OnClick = N1Click
     end
     object N7: TMenuItem
-      Tag = 244
-      Caption = 'Charm 1'
+      Tag = 236
+      Caption = 'Charm1'
       OnClick = N1Click
     end
     object N31: TMenuItem
-      Tag = 245
-      Caption = 'Charm 2'
+      Tag = 237
+      Caption = 'Charm2'
       OnClick = N1Click
     end
     object N6: TMenuItem
-      Tag = 251
+      Tag = 252
       Caption = 'OFF'
       OnClick = N1Click
     end
     object N5: TMenuItem
-      Caption = 'Exit'
+      Caption = 'EXIT'
       OnClick = N5Click
     end
   end
